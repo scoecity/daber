@@ -1,5 +1,5 @@
 // Network first so updates show up right away; fall back to the cached copy offline.
-const CACHE = 'daber-v1';
+const CACHE = 'daber-v2';
 const FILES = ['./', 'index.html', 'manifest.json', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES))); self.skipWaiting(); });
 self.addEventListener('activate', e => { e.waitUntil(self.clients.claim()); });

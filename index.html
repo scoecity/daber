@@ -845,7 +845,7 @@ function startLesson(opt){
 function lessonBar(progress){
   return `<div class="lbar"><button class="x" id="quit" aria-label="Quit">${ICON.x}</button><div class="bar"><i style="width:${Math.round(progress*100)}%"></i></div><div class="combo">${LS.combo>=3?'×'+LS.combo:''}</div></div>`;
 }
-function bindQuit(){ $('#quit').onclick=()=>{ try{recActive&&recActive.abort();}catch(e){} window.speechSynthesis?.cancel?.(); clearInterval(RUSH?.timer); RUSH=null; LS=null; $('#sheet').hidden=true; render(); }; }
+function bindQuit(){ $('#quit').onclick=()=>{ try{recActive&&recActive.finish();}catch(e){} window.speechSynthesis?.cancel?.(); clearInterval(RUSH?.timer); RUSH=null; LS=null; $('#sheet').hidden=true; render(); }; }
 function renderIntro(){
   const it=ITEMS[LS.intro[LS.introI]];
   const el=$('#sheetIn');
@@ -1117,26 +1117,42 @@ function grade(alts,targets){
 function recordSay(q,retry){
   const SR=SRec();
   if(!SR||micBroken){ if(!retry) selfRateFallback(); return; }
-  if(recActive){ try{recActive.stop();}catch(e){} return; }
+  if(recActive){ recActive.finish(); return; }   // second tap = "I'm done"
   window.speechSynthesis?.cancel?.();
   let r; try{ r=new SR(); }catch(e){ micBroken=true; selfRateFallback(); return; }
-  r.lang='he-IL'; r.interimResults=false; r.maxAlternatives=5; r.continuous=false;
-  let got=false; const heard=()=>$('#heard');
-  r.onresult=e=>{
-    got=true;
-    const alts=[...e.results[0]].map(a=>a.transcript);
+  r.lang='he-IL'; r.interimResults=true; r.maxAlternatives=5; r.continuous=false;
+  let alts=[], done=false, silenceT=null;
+  const heard=()=>$('#heard');
+  const stillHere=()=>LS&&LS.qs[LS.i]===q;
+  const finish=()=>{
+    if(done) return; done=true;
+    clearTimeout(silenceT); clearTimeout(hardT);
+    try{ r.abort(); }catch(e){}
+    recActive=null;
+    if(!stillHere()) return;
+    const m=$('#mic'); if(m) m.classList.remove('on');
+    const h=heard();
+    if(!alts.length){ if(h) h.textContent='I didn\'t catch that. Tap the mic and try again.'; return; }
     const {score,text}=grade(alts,q.targets);
     const stars=score>=.85?3:score>=.6?2:score>=.3?1:0;
-    const h=heard(); if(h) h.innerHTML=`<div class="stars">${[0,1,2].map(i=>`<span class="${i<stars?'on':''}">${ICON.star}</span>`).join('')}</div><div>I heard: ${text?heSpan(text):'<i>nothing clear</i>'}</div>`;
+    if(h) h.innerHTML=`<div class="stars">${[0,1,2].map(i=>`<span class="${i<stars?'on':''}">${ICON.star}</span>`).join('')}</div><div>I heard: ${text?heSpan(text):'<i>nothing clear</i>'}</div>`;
     if(!retry){ const sk=$('#skipSay'); if(sk) sk.remove(); answer(stars>=2,true,{stars}); }
   };
-  r.onerror=e=>{
-    if(['not-allowed','service-not-allowed','audio-capture'].includes(e.error)){ micBroken=true; if(!retry) selfRateFallback(); else toast('Recording isn\'t available here.'); }
-    else { const h=heard(); if(h) h.textContent=e.error==='no-speech'?'I didn\'t hear anything. Tap the mic and try again.':'That didn\'t work. Tap the mic to try again.'; }
+  const hardT=setTimeout(finish,8000);
+  r.onresult=e=>{
+    let joined='', isFinal=false; const extra=[];
+    for(let i=0;i<e.results.length;i++){ const res=e.results[i]; joined+=res[0].transcript; if(res.isFinal) isFinal=true; for(let k=0;k<res.length;k++) extra.push(res[k].transcript); }
+    alts=[joined,...extra].filter(t=>t&&t.trim());
+    const h=heard(); if(h&&stillHere()&&joined.trim()) h.innerHTML=`<div>${heSpan(joined)}</div><small>Tap the mic when you're done.</small>`;
+    clearTimeout(silenceT); silenceT=setTimeout(finish,isFinal?250:1400);
   };
-  r.onend=()=>{ recActive=null; const m=$('#mic'); if(m) m.classList.remove('on'); const h=heard(); if(!got&&h&&h.textContent==='Listening…') h.textContent='I didn\'t catch that. Tap the mic and try again.'; };
-  try{ r.start(); recActive=r; $('#mic').classList.add('on'); heard().textContent='Listening…'; }
-  catch(e){ micBroken=true; if(!retry) selfRateFallback(); }
+  r.onerror=e=>{
+    if(['not-allowed','service-not-allowed','audio-capture'].includes(e.error)){ done=true; clearTimeout(hardT); clearTimeout(silenceT); recActive=null; micBroken=true; if(stillHere()){ if(!retry) selfRateFallback(); else toast('Recording isn\'t available here.'); } return; }
+    finish();
+  };
+  r.onend=()=>finish();
+  try{ r.start(); recActive={finish}; $('#mic').classList.add('on'); heard().textContent='Listening… say it, then tap the mic again.'; }
+  catch(e){ clearTimeout(hardT); micBroken=true; if(!retry) selfRateFallback(); }
 }
 
 /* ---------- flashcards ---------- */
