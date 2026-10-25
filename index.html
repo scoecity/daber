@@ -1,0 +1,1211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#C4233A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Daber">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;-webkit-text-size-adjust:100%}img{max-width:100%}</style>
+<title>Daber Hebrew</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700;900&family=Rubik:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one-screen phone app. Sticky status bar, scrolling middle, bottom tab bar. Lessons open as a full-screen sheet. */
+:root{
+  --bg:#EEF3F7; --surface:#FFFFFF; --ink:#13223A; --muted:#5A6B82; --line:#D5DFEA; --soft:#E2EAF3;
+  --accent:#C4233A; --accent-2:#A51C30; --on-accent:#FFFFFF;
+  --sea:#0F7A88; --gold:#D99A00; --gold-soft:#FBF0D2;
+  --good:#1D8A57; --good-bg:#DDF2E6; --bad:#C4233A; --bad-bg:#FBE4E8;
+  --display:"Frank Ruhl Libre", "Times New Roman", serif;
+  --body:"Rubik", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0C1522; --surface:#152238; --ink:#E7EEF7; --muted:#93A4BB; --line:#24344F; --soft:#1B2B45;
+  --accent:#EE5168; --accent-2:#D63E56; --on-accent:#FFFFFF;
+  --sea:#3BB4C2; --gold:#F2BE45; --gold-soft:#3A3016;
+  --good:#4CC28A; --good-bg:#12321F; --bad:#EE5168; --bad-bg:#3A1620; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0C1522; --surface:#152238; --ink:#E7EEF7; --muted:#93A4BB; --line:#24344F; --soft:#1B2B45;
+  --accent:#EE5168; --accent-2:#D63E56; --on-accent:#FFFFFF;
+  --sea:#3BB4C2; --gold:#F2BE45; --gold-soft:#3A3016;
+  --good:#4CC28A; --good-bg:#12321F; --bad:#EE5168; --bad-bg:#3A1620; color-scheme:dark}
+
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;-webkit-tap-highlight-color:transparent;overflow:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:focus-visible,.tile:focus-visible{outline:3px solid var(--sea);outline-offset:2px}
+.he{font-family:var(--display);direction:rtl;unicode-bidi:isolate}
+.muted{color:var(--muted)}
+.app{height:100%;display:flex;flex-direction:column;max-width:560px;margin:0 auto}
+.wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* status bar */
+.top{display:flex;align-items:center;gap:12px;padding-block:10px;border-bottom:1px solid var(--line);background:var(--bg)}
+.brand{display:flex;align-items:baseline;gap:6px;margin-inline-end:auto}
+.brand .he{font-size:26px;font-weight:900;color:var(--accent);line-height:1}
+.brand small{font-size:12px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.chip{display:flex;align-items:center;gap:5px;font-weight:600;font-variant-numeric:tabular-nums;font-size:15px}
+.chip svg{width:20px;height:20px}
+.ring{width:30px;height:30px}
+
+main{flex:1;overflow-y:auto;overscroll-behavior:contain;padding-block:16px 24px}
+.nav{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);background:var(--surface);padding-bottom:env(safe-area-inset-bottom,0px)}
+.nav button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 4px 8px;font-size:12px;color:var(--muted);font-weight:500}
+.nav button svg{width:24px;height:24px}
+.nav button[aria-current="page"]{color:var(--accent)}
+
+h1,h2,h3{margin:0;text-wrap:balance}
+h2{font-size:20px}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+
+/* level card */
+.levelcard{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;align-items:center;margin-bottom:18px}
+.lvl{grid-row:span 2;width:54px;height:54px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-weight:700;font-size:20px;font-variant-numeric:tabular-nums}
+.bar{height:10px;border-radius:6px;background:var(--soft);overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--gold);border-radius:6px;transition:width .5s}
+.levelcard .meta{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* segmented */
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--soft);border-radius:12px;padding:4px;margin-bottom:8px}
+.seg button{padding:9px;border-radius:9px;font-weight:600;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgb(0 0 0/.12)}
+
+/* path */
+.path{display:flex;flex-direction:column;align-items:center;gap:30px;padding-block:18px 8px}
+.node{display:flex;flex-direction:column;align-items:center;gap:6px;width:150px}
+.disc{position:relative;width:78px;height:78px;border-radius:50%;display:grid;place-items:center;background:var(--surface);border:3px solid var(--line);box-shadow:0 5px 0 var(--line);transition:transform .12s}
+.disc:active{transform:translateY(3px);box-shadow:0 2px 0 var(--line)}
+.disc .he{font-size:34px;font-weight:700;line-height:1}
+.disc.long .he{font-size:20px}
+.node.done .disc{background:var(--sea);border-color:var(--sea);color:#fff;box-shadow:0 5px 0 color-mix(in srgb,var(--sea) 60%,#000)}
+.node.next .disc{background:var(--accent);border-color:var(--accent);color:var(--on-accent);box-shadow:0 5px 0 var(--accent-2);animation:bob 2.4s ease-in-out infinite}
+.node.locked .disc{color:var(--muted);opacity:.6}
+.node .lbl{font-size:13px;font-weight:600;text-align:center;line-height:1.25}
+.node.locked .lbl{color:var(--muted);font-weight:500}
+.crowns{display:flex;gap:4px;height:8px}
+.crowns i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.crowns i.on{background:var(--gold)}
+.startflag{position:absolute;top:-30px;background:var(--surface);color:var(--accent);font-size:12px;font-weight:700;padding:3px 9px;border-radius:8px;border:2px solid var(--accent);white-space:nowrap;font-family:var(--body);letter-spacing:.04em;text-transform:uppercase}
+@keyframes bob{50%{transform:translateY(-4px)}}
+
+/* cards */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+.stack{display:flex;flex-direction:column;gap:12px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 18px;border-radius:14px;font-weight:700;background:var(--accent);color:var(--on-accent);box-shadow:0 4px 0 var(--accent-2);width:100%;font-size:16px}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 var(--accent-2)}
+.btn.ghost{background:var(--surface);color:var(--ink);border:2px solid var(--line);box-shadow:0 4px 0 var(--line)}
+.btn.sea{background:var(--sea);box-shadow:0 4px 0 color-mix(in srgb,var(--sea) 60%,#000)}
+.btn[disabled]{opacity:.45;pointer-events:none}
+.row{display:flex;gap:10px}
+.row>*{flex:1}
+
+.practice-item{display:grid;grid-template-columns:56px 1fr;gap:14px;align-items:center;text-align:start;width:100%}
+.practice-item .ic{width:56px;height:56px;border-radius:14px;display:grid;place-items:center;background:var(--soft);font-family:var(--display);font-size:28px;font-weight:700}
+.practice-item b{display:block;font-size:17px}
+.practice-item span{font-size:14px;color:var(--muted)}
+
+/* phrasebook */
+.toggles{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.tog{padding:7px 12px;border-radius:999px;border:2px solid var(--line);font-size:14px;font-weight:600;color:var(--muted)}
+.tog[aria-pressed="true"]{border-color:var(--sea);color:var(--sea);background:color-mix(in srgb,var(--sea) 10%,transparent)}
+.search{width:100%;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;margin-bottom:12px}
+.group h3{font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:18px 0 8px}
+.phrase{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.phrase .he{font-size:24px;font-weight:700;line-height:1.3;text-align:right;grid-column:1/-1}
+.phrase .tr{font-style:italic;color:var(--sea);font-size:15px}
+.phrase .en{font-size:15px}
+.phrase .acts{grid-row:2/4;grid-column:2;display:flex;gap:6px}
+.iconbtn{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--soft);color:var(--ink)}
+.iconbtn svg{width:22px;height:22px}
+.iconbtn.on{color:var(--gold)}
+
+/* me */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
+.stat b{display:block;font-size:24px;font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--muted)}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:14px 10px}
+.badge{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.medal{width:62px;height:62px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:900;font-size:26px;background:var(--soft);color:var(--muted);border:3px dashed var(--line)}
+.badge.got .medal{background:var(--gold-soft);color:var(--gold);border:3px solid var(--gold)}
+.badge b{font-size:13px;line-height:1.2}
+.badge span{font-size:11px;color:var(--muted);line-height:1.25}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center;font-size:12px;color:var(--muted)}
+.week .d{height:64px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px}
+.week .d i{width:100%;max-width:26px;border-radius:6px 6px 3px 3px;background:var(--gold);min-height:3px}
+.week .d.zero i{background:var(--line)}
+.setting{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.setting:last-child{border-bottom:0}
+.pick{display:flex;background:var(--soft);border-radius:10px;padding:3px}
+.pick button{padding:6px 12px;border-radius:8px;font-size:14px;font-weight:600;color:var(--muted)}
+.pick button[aria-pressed="true"]{background:var(--surface);color:var(--ink)}
+
+/* lesson sheet */
+.sheet{position:fixed;inset:0;background:var(--bg);z-index:20;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.sheet-in{flex:1;display:flex;flex-direction:column;max-width:560px;width:100%;margin:0 auto;min-height:0}
+.lbar{display:flex;align-items:center;gap:12px;padding-block:12px}
+.lbar .bar{flex:1;height:14px}
+.lbar .bar>i{background:var(--good)}
+.combo{font-weight:700;color:var(--gold);font-size:14px;min-width:44px;text-align:end;font-variant-numeric:tabular-nums}
+.qbody{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:18px;padding-block:8px 20px}
+.qtitle{font-size:20px;font-weight:700}
+.glyph{font-family:var(--display);font-weight:700;font-size:120px;line-height:1.1;text-align:center;direction:rtl}
+.glyph.mid{font-size:44px;line-height:1.35}
+.prompt{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.prompt .tr{color:var(--sea);font-style:italic}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opts.list{grid-template-columns:1fr}
+.opt{padding:16px 12px;border-radius:14px;background:var(--surface);border:2px solid var(--line);box-shadow:0 4px 0 var(--line);font-weight:600;font-size:17px;min-height:60px;text-align:center}
+.opt .he{font-size:30px;font-weight:700}
+.opts.list .opt .he{font-size:24px}
+.opt.right{border-color:var(--good);background:var(--good-bg);box-shadow:0 4px 0 var(--good)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg);box-shadow:0 4px 0 var(--bad)}
+.opt[disabled]{cursor:default}
+.bigplay{width:96px;height:96px;border-radius:24px;background:var(--sea);color:#fff;display:grid;place-items:center;box-shadow:0 5px 0 color-mix(in srgb,var(--sea) 60%,#000);margin:8px auto}
+.bigplay svg{width:44px;height:44px}
+.playrow{display:flex;gap:14px;justify-content:center}
+.playrow .bigplay{margin:8px 0}
+.tray{min-height:62px;border-bottom:2px solid var(--line);display:flex;flex-wrap:wrap;gap:8px;padding:8px 0;direction:rtl;align-content:flex-start}
+.bank{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;direction:rtl}
+.tile{padding:8px 14px;border-radius:12px;background:var(--surface);border:2px solid var(--line);box-shadow:0 3px 0 var(--line);font-family:var(--display);font-size:24px;font-weight:700}
+.tile.used{visibility:hidden}
+.feedback{padding-block:14px;display:flex;flex-direction:column;gap:10px;border-top:2px solid transparent}
+.feedback.good{background:var(--good-bg);border-color:var(--good)}
+.feedback.bad{background:var(--bad-bg);border-color:var(--bad)}
+.feedback .msg{font-weight:700;font-size:18px}
+.feedback.good .msg{color:var(--good)}
+.feedback.bad .msg{color:var(--bad)}
+.feedback .ans{font-size:15px}
+.feedback .ans .he{font-size:22px;font-weight:700}
+.feedback.good .btn{background:var(--good);box-shadow:0 4px 0 color-mix(in srgb,var(--good) 60%,#000)}
+.learncard{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
+.learncard .name{font-size:22px;font-weight:700}
+.example{display:flex;align-items:center;gap:12px;background:var(--soft);border-radius:14px;padding:10px 14px;width:100%;justify-content:space-between}
+.example .he{font-size:30px;font-weight:700}
+.tip{font-size:14px;color:var(--muted);background:var(--soft);border-radius:12px;padding:10px 12px;text-align:start}
+.done-hero{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;padding-top:24px}
+.done-hero .he{font-size:64px;font-weight:900;color:var(--accent);line-height:1}
+.rewards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%}
+.reward{border-radius:14px;border:2px solid var(--line);padding:10px 6px;text-align:center}
+.reward b{display:block;font-size:24px;font-variant-numeric:tabular-nums}
+.reward span{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.reward.xp{border-color:var(--gold)}.reward.xp b{color:var(--gold)}
+.reward.acc{border-color:var(--good)}.reward.acc b{color:var(--good)}
+.reward.fire{border-color:var(--accent)}.reward.fire b{color:var(--accent)}
+.timer{font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;text-align:center}
+.x{width:40px;height:40px;display:grid;place-items:center;border-radius:10px;color:var(--muted)}
+.x svg{width:24px;height:24px}
+.toast{position:fixed;left:50%;top:calc(64px + env(safe-area-inset-top,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;z-index:40;max-width:calc(100% - 32px);text-align:center}
+canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:30;width:100%;height:100%}
+.onb{gap:18px;padding-block:28px}
+.onb .he.big{font-size:56px;font-weight:900;color:var(--accent);line-height:1}
+.choice{display:flex;flex-direction:column;align-items:center;gap:4px;padding:16px 10px;border-radius:16px;border:2px solid var(--line);background:var(--surface);box-shadow:0 4px 0 var(--line)}
+.choice .he{font-size:22px;font-weight:700}
+.choice span{font-size:14px;color:var(--muted)}
+.choice[aria-pressed="true"]{border-color:var(--sea);box-shadow:0 4px 0 var(--sea)}
+.node.test .disc{border-radius:24px;border-color:var(--gold);background:var(--gold-soft);box-shadow:0 5px 0 var(--gold)}
+.node.test.done .disc,.node.test.next .disc{background:var(--gold);border-color:var(--gold);color:#fff;box-shadow:0 5px 0 color-mix(in srgb,var(--gold) 60%,#000)}
+.node.test.next .startflag{color:var(--gold);border-color:var(--gold)}
+.node .score{font-size:12px;font-weight:700;color:var(--gold);line-height:8px}
+.banner{display:flex;flex-direction:column;gap:10px;background:var(--gold-soft);border:2px solid var(--gold);border-radius:16px;padding:14px;margin-bottom:16px}
+.banner b{display:block;font-size:17px}.banner span{font-size:14px}
+.practice-item .ic.sm{font-size:17px}
+.snd{display:inline-block;padding:4px 12px;border-radius:999px;background:var(--gold-soft);color:var(--ink);font-weight:700}
+.micwrap{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
+.mic{width:88px;height:88px;border-radius:50%;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;box-shadow:0 5px 0 var(--accent-2)}
+.mic svg{width:40px;height:40px}
+.mic.on{animation:pulse 1.1s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 16px color-mix(in srgb,var(--accent) 22%,transparent)}}
+.heard{min-height:48px}
+.heard .he{font-size:24px;font-weight:700}
+.stars{display:flex;gap:4px;justify-content:center;color:var(--line)}
+.stars svg{width:30px;height:30px}.stars .on{color:var(--gold)}
+.fc{width:100%;min-height:300px;border-radius:20px;background:var(--surface);border:2px solid var(--line);box-shadow:0 6px 0 var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:20px;text-align:center}
+.fc.flipped{border-color:var(--sea);box-shadow:0 6px 0 var(--sea)}
+.fc .name{font-size:22px;font-weight:700}
+.fc .tr{color:var(--sea);font-style:italic}
+.missed{display:flex;flex-direction:column;gap:6px;width:100%;text-align:start}
+.missed div{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 12px;background:var(--soft);border-radius:10px;font-size:14px}
+.missed .he{font-size:22px;font-weight:700}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+</head>
+<body>
+<div class="app" id="app">
+  <header class="top wrap">
+    <div class="brand"><span class="he" lang="he">דַּבֵּר</span><small>daber · speak</small></div>
+    <div class="chip" id="streakChip" title="Day streak"></div>
+    <div class="chip" id="goalChip" title="Daily goal"></div>
+  </header>
+  <main class="wrap" id="main"></main>
+  <nav class="nav" id="nav">
+    <button data-tab="learn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/><path d="M9 8h6"/></svg>Learn</button>
+    <button data-tab="practice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>Practice</button>
+    <button data-tab="phrases"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>Phrases</button>
+    <button data-tab="me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Me</button>
+  </nav>
+</div>
+<div class="sheet" id="sheet" hidden><div class="sheet-in wrap" id="sheetIn"></div></div>
+<canvas id="confetti" hidden></canvas>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/* ---------- content ---------- */
+// [id, glyph, Hebrew name, English name, sound, tip, example word, translit, meaning]
+const RAW_LETTERS = [
+['alef','א','אָלֶף','Alef','silent','Silent. It just carries whatever vowel sits on it.','אַבָּא','aba','dad'],
+['bet','בּ','בֵּית','Bet','b','With a dot inside it says b.','בַּיִת','bayit','house'],
+['vet','ב','בֵית','Vet','v','Same letter with no dot says v.','אַהֲבָה','ahava','love'],
+['gimel','ג','גִּימֶל','Gimel','g','A hard g, like "go".','גְּלִידָה','glida','ice cream'],
+['dalet','ד','דָּלֶת','Dalet','d','Dalet means door. Picture one.','דָּג','dag','fish'],
+['he','ה','הֵא','He','h','A soft h. At the end of a word it is usually silent.','הַיּוֹם','hayom','today'],
+['vav','ו','וָו','Vav','v / o / u','A v sound, or a vowel: וֹ says o and וּ says u.','וֶרֶד','vered','rose'],
+['zayin','ז','זַיִן','Zayin','z','Like "zoo".','זְמַן','zman','time'],
+['chet','ח','חֵית','Chet','ch','Throaty, like "Bach". In modern speech it sounds like כ.','חָבֵר','chaver','friend'],
+['tet','ט','טֵית','Tet','t','Sounds just like ת.','טוֹב','tov','good'],
+['yod','י','יוֹד','Yod','y','Like "yes". It also marks i and ei sounds.','יָד','yad','hand'],
+['kaf','כּ','כַּף','Kaf','k','With a dot it says k.','כֶּלֶב','kelev','dog'],
+['khaf','כ','כָף','Khaf','kh','No dot: a throaty kh, same as ח.','מִכְתָּב','mikhtav','letter (mail)'],
+['lamed','ל','לָמֶד','Lamed','l','The tall one that rises above the line.','לֵב','lev','heart'],
+['mem','מ','מֵם','Mem','m','Like "mom".','מַיִם','mayim','water'],
+['nun','נ','נוּן','Nun','n','Like "no".','נֵר','ner','candle'],
+['samekh','ס','סָמֶךְ','Samekh','s','A closed circle. Like "sun".','סֵפֶר','sefer','book'],
+['ayin','ע','עַיִן','Ayin','silent','Usually silent in modern speech, just like א.','עִבְרִית','ivrit','Hebrew'],
+['pe','פּ','פֵּא','Pe','p','With a dot it says p.','פֶּה','pe','mouth'],
+['fe','פ','פֵא','Fe','f','No dot: f.','יָפֶה','yafe','beautiful'],
+['tsadi','צ','צָדִי','Tsadi','ts','Like the end of "cats".','צִפּוֹר','tsipor','bird'],
+['qof','ק','קוֹף','Qof','k','Sounds just like כּ.','קָפֶה','kafe','coffee'],
+['resh','ר','רֵישׁ','Resh','r','A soft r from the throat, like French.','רֶגַע','rega','a moment'],
+['shin','שׁ','שִׁין','Shin','sh','Dot on the right side: sh.','שָׁלוֹם','shalom','hello, peace'],
+['sin','שׂ','שִׂין','Sin','s','Dot on the left side: s.','שִׂמְחָה','simcha','joy'],
+['tav','ת','תָּו','Tav','t','Like "tea".','תּוֹדָה','toda','thanks'],
+['khaf_s','ך','כָף סוֹפִית','Final Khaf','kh','At the end of a word, כ drops below the line.','מֶלֶךְ','melekh','king'],
+['mem_s','ם','מֵם סוֹפִית','Final Mem','m','At the end of a word, מ closes into a box.','שָׁלוֹם','shalom','hello, peace'],
+['nun_s','ן','נוּן סוֹפִית','Final Nun','n','At the end of a word, נ stretches down.','לָבָן','lavan','white'],
+['fe_s','ף','פֵא סוֹפִית','Final Fe','f','At the end of a word, פ drops below the line.','כֶּסֶף','kesef','money'],
+['tsadi_s','ץ','צָדִי סוֹפִית','Final Tsadi','ts','At the end of a word, צ drops below the line.','עֵץ','ets','tree'],
+['kamatz','מָ','קָמָץ','Kamatz','ma','A small T under the letter: "ah".','מָה','ma','what'],
+['patach','מַ','פַּתָּח','Patach','ma','A flat line under the letter: also "ah".','אַבָּא','aba','dad'],
+['tsere','מֵ','צֵירֵי','Tsere','me','Two dots side by side: "eh".','לֵב','lev','heart'],
+['segol','מֶ','סֶגּוֹל','Segol','me','Three dots in a triangle: also "eh".','כֶּלֶב','kelev','dog'],
+['hiriq','מִ','חִירִיק','Hiriq','mi','One dot underneath: "ee".','מִי','mi','who'],
+['holam','מוֹ','חוֹלָם','Holam','mo','A dot on top, usually on a ו: "oh".','טוֹב','tov','good'],
+['shuruk','מוּ','שׁוּרוּק','Shuruk','mu','A ו with a dot in its belly: "oo".','שׁוּק','shuk','market'],
+['kubutz','מֻ','קֻבּוּץ','Kubutz','mu','Three slanted dots: also "oo".','סֻכָּר','sukar','sugar'],
+['shva','מְ','שְׁוָא','Shva','m(e)','Two stacked dots: a quick "e", or nothing at all.','בְּבַקָּשָׁה','bevakasha','please'],
+];
+const GLYPHS = {};
+RAW_LETTERS.forEach(([id,ch,name,nm,snd,tip,w,wt,we])=>GLYPHS[id]={id:'L:'+id,key:id,kind:'glyph',ch,name,nm,snd,tip,w,wt,we,vowel:/^[מ]./.test(ch)&&ch.length>1});
+
+/* Phrases. he/tr can vary by who speaks and who is addressed.
+   Variant keys: two letters, speaker then listener (m/f), "?" = either. */
+const PHRASES = {
+greet:[
+ ['g1','שָׁלוֹם','shalom','Hello / goodbye'],
+ ['g2','בֹּקֶר טוֹב','boker tov','Good morning'],
+ ['g3','עֶרֶב טוֹב','erev tov','Good evening'],
+ ['g4','לַיְלָה טוֹב','layla tov','Good night'],
+ ['g5','מָה נִשְׁמָע?','ma nishma?','What\'s up?'],
+ ['g6',{'?f':'מָה שְׁלוֹמֵךְ?','?m':'מָה שְׁלוֹמְךָ?'},{'?f':'ma shlomekh?','?m':'ma shlomkha?'},'How are you?'],
+ ['g7','אֲנִי בְּסֵדֶר','ani beseder','I\'m okay'],
+ ['g8','תּוֹדָה','toda','Thank you'],
+ ['g9','בְּבַקָּשָׁה','bevakasha','Please / you\'re welcome'],
+ ['g10','סְלִיחָה','slicha','Sorry / excuse me'],
+ ['g11','לְהִתְרָאוֹת','lehitra\'ot','See you later'],
+],
+basics:[
+ ['b1','כֵּן','ken','Yes'],
+ ['b2','לֹא','lo','No'],
+ ['b3','אוּלַי','ulay','Maybe'],
+ ['b4','בֶּטַח','betach','Sure / of course'],
+ ['b5',{'m?':'אֲנִי לֹא מֵבִין','f?':'אֲנִי לֹא מְבִינָה'},{'m?':'ani lo mevin','f?':'ani lo mevina'},'I don\'t understand'],
+ ['b6','אֶפְשָׁר לְאַט יוֹתֵר?','efshar le\'at yoter?','Slower, please?'],
+ ['b7',{'?f':'תַּגִּידִי שׁוּב?','?m':'תַּגִּיד שׁוּב?'},{'?f':'tagidi shuv?','?m':'tagid shuv?'},'Can you say it again?'],
+ ['b8','מָה זֶה אוֹמֵר?','ma ze omer?','What does that mean?'],
+ ['b9','אֵיךְ אוֹמְרִים אֶת זֶה בְּעִבְרִית?','eikh omrim et ze be\'ivrit?','How do you say this in Hebrew?'],
+ ['b10',{'m?':'אֲנִי לוֹמֵד עִבְרִית','f?':'אֲנִי לוֹמֶדֶת עִבְרִית'},{'m?':'ani lomed ivrit','f?':'ani lomedet ivrit'},'I\'m learning Hebrew'],
+],
+daily:[
+ ['d1',{'?f':'מָה אַתְּ עוֹשָׂה?','?m':'מָה אַתָּה עוֹשֶׂה?'},{'?f':'ma at osa?','?m':'ma ata ose?'},'What are you doing?'],
+ ['d2',{'?f':'אֵיפֹה אַתְּ?','?m':'אֵיפֹה אַתָּה?'},{'?f':'eifo at?','?m':'eifo ata?'},'Where are you?'],
+ ['d3','אֲנִי בַּדֶּרֶךְ','ani baderekh','I\'m on my way'],
+ ['d4','עוֹד מְעַט','od me\'at','Soon / in a bit'],
+ ['d5',{'m?':'אֲנִי רָעֵב','f?':'אֲנִי רְעֵבָה'},{'m?':'ani ra\'ev','f?':'ani re\'eva'},'I\'m hungry'],
+ ['d6',{'m?':'אֲנִי עָיֵף','f?':'אֲנִי עֲיֵפָה'},{'m?':'ani ayef','f?':'ani ayefa'},'I\'m tired'],
+ ['d7',{'?f':'בּוֹאִי נֵלֵךְ','?m':'בּוֹא נֵלֵךְ'},{'?f':'boi nelekh','?m':'bo nelekh'},'Let\'s go'],
+ ['d8',{'?f':'מָה אַתְּ רוֹצָה לֶאֱכֹל?','?m':'מָה אַתָּה רוֹצֶה לֶאֱכֹל?'},{'?f':'ma at rotsa le\'ekhol?','?m':'ma ata rotse le\'ekhol?'},'What do you want to eat?'],
+ ['d9','יַאללָה','yalla','Come on / let\'s do it'],
+ ['d10','סַבָּבָה','sababa','Cool / all good'],
+ ['d11','אֵין בְּעָיָה','ein be\'aya','No problem'],
+ ['d12','רֶגַע','rega','One sec'],
+],
+sweet:[
+ ['s1',{'mf':'אֲנִי אוֹהֵב אוֹתָךְ','mm':'אֲנִי אוֹהֵב אוֹתְךָ','ff':'אֲנִי אוֹהֶבֶת אוֹתָךְ','fm':'אֲנִי אוֹהֶבֶת אוֹתְךָ'},{'mf':'ani ohev otakh','mm':'ani ohev otkha','ff':'ani ohevet otakh','fm':'ani ohevet otkha'},'I love you'],
+ ['s2',{'?f':'אַתְּ יָפָה','?m':'אַתָּה יָפֶה'},{'?f':'at yafa','?m':'ata yafe'},'You\'re beautiful'],
+ ['s3',{'?f':'הִתְגַּעְגַּעְתִּי אֵלַיִךְ','?m':'הִתְגַּעְגַּעְתִּי אֵלֶיךָ'},{'?f':'hitga\'agati elayikh','?m':'hitga\'agati elekha'},'I missed you'],
+ ['s4',{'mf':'אֲנִי מִתְגַּעְגֵּעַ אֵלַיִךְ','mm':'אֲנִי מִתְגַּעְגֵּעַ אֵלֶיךָ','ff':'אֲנִי מִתְגַּעְגַּעַת אֵלַיִךְ','fm':'אֲנִי מִתְגַּעְגַּעַת אֵלֶיךָ'},{'mf':'ani mitga\'age\'a elayikh','mm':'ani mitga\'age\'a elekha','ff':'ani mitga\'aga\'at elayikh','fm':'ani mitga\'aga\'at elekha'},'I miss you'],
+ ['s5','חַיִּים שֶׁלִּי','chayim sheli','My love (lit. my life)'],
+ ['s6','מוֹתֶק','motek','Sweetie'],
+ ['s7',{'?f':'חֲמוּדָה','?m':'חָמוּד'},{'?f':'chamuda','?m':'chamud'},'Cutie'],
+ ['s8','נְשִׁיקוֹת','neshikot','Kisses'],
+ ['s9',{'?f':'אַתְּ הַכֹּל בִּשְׁבִילִי','?m':'אַתָּה הַכֹּל בִּשְׁבִילִי'},{'?f':'at hakol bishvili','?m':'ata hakol bishvili'},'You\'re everything to me'],
+ ['s10',{'mf':'אֲנִי שָׂמֵחַ אִתָּךְ','mm':'אֲנִי שָׂמֵחַ אִתְּךָ','ff':'אֲנִי שְׂמֵחָה אִתָּךְ','fm':'אֲנִי שְׂמֵחָה אִתְּךָ'},{'mf':'ani same\'ach itakh','mm':'ani same\'ach itkha','ff':'ani smecha itakh','fm':'ani smecha itkha'},'I\'m happy with you'],
+ ['s11','לַיְלָה טוֹב, מוֹתֶק','layla tov, motek','Good night, sweetie'],
+],
+hear:[
+ ['h1',{'fm':'אֲנִי אוֹהֶבֶת אוֹתְךָ','ff':'אֲנִי אוֹהֶבֶת אוֹתָךְ','mm':'אֲנִי אוֹהֵב אוֹתְךָ','mf':'אֲנִי אוֹהֵב אוֹתָךְ'},{'fm':'ani ohevet otkha','ff':'ani ohevet otakh','mm':'ani ohev otkha','mf':'ani ohev otakh'},'I love you'],
+ ['h2',{'?m':'אַתָּה רָעֵב?','?f':'אַתְּ רְעֵבָה?'},{'?m':'ata ra\'ev?','?f':'at re\'eva?'},'Are you hungry?'],
+ ['h3',{'?m':'בּוֹא הֵנָּה','?f':'בּוֹאִי הֵנָּה'},{'?m':'bo hena','?f':'boi hena'},'Come here'],
+ ['h4',{'?m':'אֵיךְ הָיָה הַיּוֹם שֶׁלְּךָ?','?f':'אֵיךְ הָיָה הַיּוֹם שֶׁלָּךְ?'},{'?m':'eikh haya hayom shelkha?','?f':'eikh haya hayom shelakh?'},'How was your day?'],
+ ['h5',{'?m':'מָה אַתָּה רוֹצֶה?','?f':'מָה אַתְּ רוֹצָה?'},{'?m':'ma ata rotse?','?f':'ma at rotsa?'},'What do you want?'],
+ ['h6',{'?m':'אָכַלְתָּ?','?f':'אָכַלְתְּ?'},{'?m':'akhalta?','?f':'akhalt?'},'Did you eat?'],
+ ['h7',{'?m':'תִּתְקַשֵּׁר אֵלַי','?f':'תִּתְקַשְּׁרִי אֵלַי'},{'?m':'titkasher elai','?f':'titkashri elai'},'Call me'],
+ ['h8',{'?m':'אַל תִּדְאַג','?f':'אַל תִּדְאֲגִי'},{'?m':'al tid\'ag','?f':'al tid\'agi'},'Don\'t worry'],
+ ['h9',{'f?':'הִתְגַּעְגַּעְתְּ אֵלַי?','m?':'הִתְגַּעְגַּעְתָּ אֵלַי?'},{'f?':'hitga\'agat elai?','m?':'hitga\'agata elai?'},'Did you miss me?'],
+ ['h10','דַּי!','dai!','Stop it! / Enough!'],
+ ['h11','נוּ?','nu?','So? / Well?'],
+ ['h12','וַאלָה?','vala?','Really?'],
+],
+family:[
+ ['f1','נָעִים מְאוֹד','na\'im me\'od','Nice to meet you'],
+ ['f2','קוֹרְאִים לִי רוֹס','kor\'im li Ross','My name is Ross'],
+ ['f3','בְּתֵאָבוֹן','bete\'avon','Enjoy your meal'],
+ ['f4','טָעִים מְאוֹד','ta\'im me\'od','Very tasty'],
+ ['f5',{'m?':'אֲנִי שָׂבֵעַ','f?':'אֲנִי שְׂבֵעָה'},{'m?':'ani save\'a','f?':'ani sve\'a'},'I\'m full'],
+ ['f6','עוֹד קְצָת?','od ktsat?','A little more?'],
+ ['f7','לְחַיִּים','lechayim','Cheers!'],
+ ['f8','שַׁבַּת שָׁלוֹם','shabbat shalom','Shabbat shalom'],
+ ['f9','חַג שָׂמֵחַ','chag same\'ach','Happy holiday'],
+ ['f10','מַזָּל טוֹב','mazal tov','Congratulations'],
+],
+};
+const ITEMS = {...Object.fromEntries(Object.values(GLYPHS).map(g=>[g.id,g]))};
+const PH_UNIT = {};
+for (const [cat,list] of Object.entries(PHRASES)) list.forEach(([id,he,tr,en])=>{
+  ITEMS['P:'+id] = {id:'P:'+id,kind:'phrase',cat,heV:he,trV:tr,en,partner:cat==='hear'};
+  PH_UNIT['P:'+id]=cat;
+});
+const L = ids=>ids.split(' ').map(k=>'L:'+k);
+const P = cat=>PHRASES[cat].map(p=>'P:'+p[0]);
+const UNITS = [
+ {id:'ab1',track:'ab',glyph:'א',title:'First letters',items:L('alef bet vet gimel dalet he')},
+ {id:'ab2',track:'ab',glyph:'ו',title:'Vav to Yod',items:L('vav zayin chet tet yod')},
+ {id:'ab3',track:'ab',glyph:'כ',title:'Kaf to Samekh',items:L('kaf khaf lamed mem nun samekh')},
+ {id:'x1',track:'ab',test:true,glyph:'מִבְחָן',title:'Checkpoint test'},
+ {id:'ab4',track:'ab',glyph:'ע',title:'Ayin to Qof',items:L('ayin pe fe tsadi qof')},
+ {id:'ab5',track:'ab',glyph:'ת',title:'Resh to Tav',items:L('resh shin sin tav')},
+ {id:'ab6',track:'ab',glyph:'ם',title:'Final forms',items:L('khaf_s mem_s nun_s fe_s tsadi_s')},
+ {id:'x2',track:'ab',test:true,glyph:'מִבְחָן',title:'All letters test'},
+ {id:'ab7',track:'ab',glyph:'מָ',title:'Vowels: a, e, i',items:L('kamatz patach tsere segol hiriq')},
+ {id:'ab8',track:'ab',glyph:'מוּ',title:'Vowels: o, u, shva',items:L('holam shuruk kubutz shva')},
+ {id:'ab9',track:'ab',glyph:'קְרָא',title:'Reading mix',items:Object.keys(GLYPHS).map(k=>'L:'+k),mix:true},
+ {id:'x3',track:'ab',test:true,glyph:'מִבְחָן',title:'Alef-Bet final exam'},
+ {id:'t1',track:'talk',glyph:'שָׁלוֹם',title:'Greetings',items:P('greet')},
+ {id:'t2',track:'talk',glyph:'כֵּן',title:'Yes, no and "say again?"',items:P('basics')},
+ {id:'t3',track:'talk',glyph:'יַאללָה',title:'Everyday life',items:P('daily')},
+ {id:'x4',track:'talk',test:true,glyph:'מִבְחָן',title:'Checkpoint test'},
+ {id:'t4',track:'talk',glyph:'מוֹתֶק',title:'Sweet talk',items:P('sweet')},
+ {id:'t5',track:'talk',glyph:'נוּ?',title:'What you\'ll hear',items:P('hear')},
+ {id:'t6',track:'talk',glyph:'לְחַיִּים',title:'Family dinner',items:P('family')},
+
+{id:'x5',track:'talk',test:true,glyph:'מִבְחָן',title:'Talk final exam'}];
+UNITS.forEach((u,i)=>{ if(u.test) u.items=[...new Set(UNITS.slice(0,i).filter(x=>x.track===u.track&&!x.test&&!x.mix).flatMap(x=>x.items))]; });
+const CAT_TITLE = {greet:'Greetings',basics:'Yes, no and "say again?"',daily:'Everyday life',sweet:'Sweet talk',hear:'What you\'ll hear',family:'Family dinner'};
+const BADGES = [
+ {id:'first',g:'א',t:'First lesson',d:'Finish any lesson'},
+ {id:'letters',g:'ת',t:'Alef to Tav',d:'Learn all 22 letters'},
+ {id:'finals',g:'ץ',t:'Strong finish',d:'Learn the final forms'},
+ {id:'vowels',g:'מִ',t:'Vowel hunter',d:'Finish both vowel lessons'},
+ {id:'sweet',g:'לֵב',t:'Sweet talker',d:'Finish Sweet talk'},
+ {id:'perfect',g:'ק',t:'Flawless',d:'A lesson with no mistakes'},
+ {id:'s3',g:'ג',t:'On a roll',d:'3-day streak'},
+ {id:'s7',g:'ז',t:'Full week',d:'7-day streak'},
+ {id:'rush',g:'כ',t:'Speed reader',d:'Score 20 in Letter Rush'},
+ {id:'passed',g:'י',t:'Test passed',d:'Score 80% or more on a test'},
+ {id:'xp500',g:'תק',t:'500 XP',d:'Earn 500 XP'},
+];
+const BADGE_TEST = {
+ first:s=>Object.values(s.lessons).some(n=>n>0),
+ letters:s=>['ab1','ab2','ab3','ab4','ab5'].every(u=>s.lessons[u]),
+ finals:s=>!!s.lessons.ab6, vowels:s=>s.lessons.ab7&&s.lessons.ab8,
+ sweet:s=>!!s.lessons.t4, perfect:s=>!!s.flags.perfect,
+ s3:s=>s.bestStreak>=3, s7:s=>s.bestStreak>=7, rush:s=>s.rushBest>=20, xp500:s=>s.xp>=500, passed:s=>!!s.flags.passed,
+};
+const DAILY_GOAL = 50;
+
+/* ---------- state ---------- */
+const KEY='daber-v1';
+const fresh = ()=>({v:1,xp:0,lessons:{},stats:{},days:{},streak:0,bestStreak:0,lastDay:null,rushBest:0,badges:{},stars:{},flags:{},tests:[],testBest:{},lastTest:0,
+  set:{me:null,them:'f',niq:true,tr:true,rate:0.85},updated:0});
+let S = fresh();
+try{ const raw=localStorage.getItem(KEY); if(raw){ const o=JSON.parse(raw); S={...fresh(),...o,set:{...fresh().set,...(o.set||{})}}; } }catch(e){}
+let cloudRef=null, cloudTimer=null, cloudBusy=false;
+function save(){
+  S.updated=Date.now();
+  try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){}
+  if(cloudRef){ clearTimeout(cloudTimer); cloudTimer=setTimeout(pushCloud,1500); }
+}
+async function pushCloud(){
+  if(!cloudRef) return;
+  if(cloudBusy){ cloudTimer=setTimeout(pushCloud,1500); return; }
+  cloudBusy=true;
+  try{ await cloudRef.set({state:JSON.stringify(S),updated:S.updated}); }catch(e){}
+  cloudBusy=false;
+}
+async function initCloud(){
+  for(let i=0;i<25 && !(window.claude&&window.claude.use);i++) await new Promise(r=>setTimeout(r,200));
+  if(!(window.claude&&window.claude.use)) return;
+  try{
+    const [db,user]=await Promise.all([claude.use('db'),claude.use('user')]);
+    if(!db||!user) return;
+    const id=await user.id(); if(!id) return;
+    const ref=db.doc('data/users/'+id+'/progress');
+    const snap=await ref.get();
+    cloudRef=ref;
+    if(snap.exists){
+      const r=snap.data()||{};
+      try{
+        const remote=JSON.parse(r.state||'{}');
+        if((remote.updated||0)>(S.updated||0) && (remote.xp||0)>=(S.xp||0)){
+          S={...fresh(),...remote,set:{...fresh().set,...(remote.set||{})}};
+          try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){}
+          render();
+          return;
+        }
+      }catch(e){}
+    }
+    if(S.updated) pushCloud();
+  }catch(e){}
+}
+
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const pickN=(a,n)=>shuffle(a).slice(0,n);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const strip=s=>s.replace(/[֑-ׇֽֿׁׂׅׄ]/g,'');
+const dayKey=(d=new Date())=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const yesterday=()=>{const d=new Date();d.setDate(d.getDate()-1);return dayKey(d)};
+function variantKey(item){ const me=S.set.me||'m', them=S.set.them||'f'; return item.partner? them+me : me+them; }
+function pickV(v,item){
+  if(typeof v==='string') return v;
+  const k=variantKey(item);
+  return v[k] ?? v[k[0]+'?'] ?? v['?'+k[1]] ?? Object.values(v)[0];
+}
+const heOf=it=>it.kind==='glyph'?it.ch:pickV(it.heV,it);
+const trOf=it=>it.kind==='glyph'?it.snd:pickV(it.trV,it);
+const show=t=>S.set.niq?t:strip(t);
+function heSpan(t,cls=''){return `<span class="he ${cls}" lang="he" dir="rtl">${esc(show(t))}</span>`}
+const levelOf=xp=>Math.floor(Math.sqrt(xp/40))+1;
+const xpFor=l=>40*(l-1)*(l-1);
+function currentStreak(){ return (S.lastDay===dayKey()||S.lastDay===yesterday())?S.streak:0; }
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.hidden=false; clearTimeout(toast.t); toast.t=setTimeout(()=>t.hidden=true,2600); }
+
+/* ---------- speech ---------- */
+let heVoices=[];
+function loadVoices(){ try{ heVoices=speechSynthesis.getVoices().filter(v=>/^(he|iw)/i.test(v.lang)); }catch(e){} }
+try{ loadVoices(); speechSynthesis.onvoiceschanged=loadVoices; }catch(e){}
+function say(text,slow){
+  try{
+    if(!('speechSynthesis' in window)) throw 0;
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang='he-IL'; if(heVoices[0]) u.voice=heVoices[0];
+    u.rate=slow?0.55:S.set.rate;
+    speechSynthesis.speak(u);
+    if(!heVoices.length && !say.warned){ say.warned=true; setTimeout(()=>{ loadVoices(); if(!heVoices.length) toast('No Hebrew voice found on this device. See Me › Sound to add one.'); },600); }
+  }catch(e){ toast('Audio isn\'t available in this browser.'); }
+}
+const sayItem=(it,slow)=>say(it.kind==='glyph'?it.name:heOf(it),slow);
+const ICON={
+ play:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></svg>',
+ slow:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M9 2h6"/></svg>',
+ star:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.8 5.7 21.4l1.5-7.1L1.8 9.4 9 8.6z"/></svg>',
+ starO:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 2 3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.8 5.7 21.4l1.5-7.1L1.8 9.4 9 8.6z"/></svg>',
+ left:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>',
+ right:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>',
+ mic:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v4"/></svg>',
+ shuffle:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="M15 15l6 6"/><path d="M4 4l5 5"/></svg>',
+ x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+ flame:'<svg viewBox="0 0 24 24"><path fill="var(--accent)" d="M12 2c1 4 6 6 6 12a6 6 0 0 1-12 0c0-3 1.6-4.7 3-6 .3 2 1 3 2 3.5C10 8 11 5 12 2z"/></svg>',
+ flameOff:'<svg viewBox="0 0 24 24"><path fill="var(--line)" d="M12 2c1 4 6 6 6 12a6 6 0 0 1-12 0c0-3 1.6-4.7 3-6 .3 2 1 3 2 3.5C10 8 11 5 12 2z"/></svg>',
+};
+
+/* ---------- shell ---------- */
+let tab='learn', track='ab', phraseQuery='', favOnly=false;
+function renderTop(){
+  const st=currentStreak(), today=S.days[dayKey()]||0, p=Math.min(1,today/DAILY_GOAL), C=2*Math.PI*12;
+  $('#streakChip').innerHTML=(S.lastDay===dayKey()?ICON.flame:ICON.flameOff)+`<span>${st}</span>`;
+  $('#goalChip').innerHTML=`<svg class="ring" viewBox="0 0 30 30"><circle cx="15" cy="15" r="12" fill="none" stroke="var(--soft)" stroke-width="4"/><circle cx="15" cy="15" r="12" fill="none" stroke="var(--gold)" stroke-width="4" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-p)}" transform="rotate(-90 15 15)"/></svg><span>${today}/${DAILY_GOAL}</span>`;
+  document.querySelectorAll('#nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===tab?'page':'false'));
+}
+function render(){
+  renderTop();
+  if(!S.set.me){ renderOnboarding(); return; }
+  const m=$('#main');
+  m.innerHTML = tab==='learn'?viewLearn():tab==='practice'?viewPractice():tab==='phrases'?viewPhrases():viewMe();
+  bindView();
+}
+document.getElementById('nav').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;tab=b.dataset.tab;render();$('#main').scrollTop=0;});
+
+function prevUnit(u){ const list=UNITS.filter(x=>x.track===u.track); return list.slice(0,list.indexOf(u)).reverse().find(x=>!x.test); }
+function unitUnlocked(u){ const p=prevUnit(u); return !p||!!S.lessons[p.id]; }
+function testDue(){ return seenItems().length>=15 && (!S.lastTest || Date.now()-S.lastTest>=3*864e5); }
+function viewLearn(){
+  const lv=levelOf(S.xp), a=xpFor(lv), b=xpFor(lv+1);
+  const list=UNITS.filter(u=>u.track===track);
+  const nextU=list.find(u=>!S.lessons[u.id]&&unitUnlocked(u));
+  const off=[0,46,66,46,0,-46,-66,-46];
+  return `
+  <div class="levelcard">
+    <div class="lvl">${lv}</div>
+    <div class="meta"><span>Level ${lv}</span><span>${S.xp} / ${b} XP</span></div>
+    <div class="bar"><i style="width:${Math.round((S.xp-a)/(b-a)*100)}%"></i></div>
+  </div>
+  ${testDue()?`<div class="banner"><div><b>Test time</b><span>${S.lastTest?'It\'s been a few days. ':''}20 questions on everything you've learned, with no hints. Score 80% to pass.</span></div><button class="btn" data-act="exam">Start the test</button></div>`:''}
+  <div class="seg" role="group" aria-label="Track">
+    <button data-track="ab" aria-pressed="${track==='ab'}">Alef-Bet</button>
+    <button data-track="talk" aria-pressed="${track==='talk'}">Talk</button>
+  </div>
+  <p class="muted" style="margin:6px 2px 0;font-size:14px">${track==='ab'?'Relearn every letter and vowel sign, then read real words.':'Phrases for everyday life together. Gender forms follow your settings.'}</p>
+  <div class="path">
+  ${list.map((u,i)=>{
+    const n=S.lessons[u.id]||0, open=unitUnlocked(u), best=(S.testBest||{})[u.id];
+    const isDone=u.test?best>=80:n>0;
+    const cls=(u.test?'test ':'')+(isDone?'done':(u===nextU?'next':(open?'':'locked')));
+    const long=[...strip(u.glyph)].length>2;
+    return `<div class="node ${cls}" style="transform:translateX(${off[i%off.length]}px)">
+      <button class="disc ${long?'long':''}" data-unit="${u.id}" aria-label="${esc(u.title)}${open?'':' (locked)'}">
+        ${u===nextU?'<span class="startflag">Start</span>':''}
+        <span class="he" lang="he">${esc(u.glyph)}</span>
+      </button>
+      ${u.test?`<div class="score">${best!=null?'Best '+best+'%':'Test'}</div>`:`<div class="crowns">${[0,1,2].map(k=>`<i class="${n>k?'on':''}"></i>`).join('')}</div>`}
+      <div class="lbl">${esc(u.title)}</div>
+    </div>`}).join('')}
+  </div>`;
+}
+function seenItems(){ return Object.keys(S.stats).filter(k=>ITEMS[k]); }
+function viewPractice(){
+  const seen=seenItems().length;
+  return `<div class="stack">
+    <div><div class="eyebrow">Practice</div><h2>Keep it fresh</h2></div>
+    <button class="card practice-item" data-act="review"><span class="ic he" lang="he">חזר</span><div><b>Smart review</b><span>${seen>=4?`Your ${Math.min(12,seen)} shakiest items, mixed together.`:'Unlocks after your first lesson.'}</span></div></button>
+    <button class="card practice-item" data-act="rush"><span class="ic he" lang="he">אבג</span><div><b>Letter Rush</b><span>60 seconds. Name the sound as fast as you can. Best: ${S.rushBest}</span></div></button>
+    <button class="card practice-item" data-act="listen"><span class="ic he sm" lang="he">אֹזֶן</span><div><b>Ear training</b><span>Hear a phrase, pick what it means. Gets you ready for the other side of the conversation.</span></div></button>
+    <button class="card practice-item" data-act="speak"><span class="ic he" lang="he">דַּבֵּר</span><div><b>Repeat after me</b><span>Hear a phrase, record yourself saying it, and get a score.</span></div></button>
+    <button class="card practice-item" data-act="cards"><span class="ic he sm" lang="he">כַּרְטִיס</span><div><b>Flashcards</b><span>Flip through letters and phrases at your own pace, back and forward.</span></div></button>
+    <button class="card practice-item" data-act="exam"><span class="ic he sm" lang="he">מִבְחָן</span><div><b>Progress test</b><span>${seen>=15?`20 questions, no hints. ${S.tests.length?'Last score: '+S.tests[S.tests.length-1].score+'%.':'See where you stand.'}`:`Unlocks after you learn 15 items. You have ${seen}.`}</span></div></button>
+    <div class="tip"><b>Tip:</b> Try one phrase on her today. Real conversation sticks better than any quiz.</div>
+  </div>`;
+}
+function viewPhrases(){
+  const q=phraseQuery.trim().toLowerCase();
+  const fav=S.stars||{};
+  return `<div class="toggles">
+      <button class="tog" data-set="niq" aria-pressed="${S.set.niq}">Vowel marks</button>
+      <button class="tog" data-set="tr" aria-pressed="${S.set.tr}">Transliteration</button>
+      <button class="tog" data-fav aria-pressed="${favOnly}">Starred</button>
+    </div>
+    <input class="search" id="phraseSearch" type="search" placeholder="Search English, Hebrew or sounds" value="${esc(phraseQuery)}" autocomplete="off">
+    ${Object.keys(PHRASES).map(cat=>{
+      const rows=P(cat).map(id=>ITEMS[id]).filter(it=>{
+        if(favOnly&&!fav[it.id]) return false;
+        if(!q) return true;
+        return (it.en+' '+trOf(it)+' '+strip(heOf(it))).toLowerCase().includes(q);
+      });
+      if(!rows.length) return '';
+      return `<div class="group"><h3>${esc(CAT_TITLE[cat])}</h3>${rows.map(it=>`
+        <div class="phrase">
+          ${heSpan(heOf(it))}
+          ${S.set.tr?`<span class="tr">${esc(trOf(it))}</span>`:''}
+          <span class="en">${esc(it.en)}</span>
+          <div class="acts">
+            <button class="iconbtn" data-say="${it.id}" aria-label="Play">${ICON.play}</button>
+            <button class="iconbtn" data-say="${it.id}" data-slow aria-label="Play slowly">${ICON.slow}</button>
+            <button class="iconbtn ${fav[it.id]?'on':''}" data-star="${it.id}" aria-label="Star">${fav[it.id]?ICON.star:ICON.starO}</button>
+          </div>
+        </div>`).join('')}</div>`;
+    }).join('')||'<p class="muted">Nothing matches yet.</p>'}`;
+}
+function viewMe(){
+  const lv=levelOf(S.xp), learned=seenItems().length;
+  const days=[...Array(7)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-(6-i));return d});
+  const max=Math.max(DAILY_GOAL,...days.map(d=>S.days[dayKey(d)]||0));
+  return `<div class="stack">
+    <div class="stats">
+      <div class="stat"><b>${S.xp}</b><span>Total XP</span></div>
+      <div class="stat"><b>${currentStreak()}</b><span>Day streak</span></div>
+      <div class="stat"><b>${learned}</b><span>Items learned</span></div>
+    </div>
+    <div class="card"><div class="eyebrow" style="margin-bottom:10px">Last 7 days</div>
+      <div class="week">${days.map(d=>{const v=S.days[dayKey(d)]||0;return `<div class="d ${v?'':'zero'}"><i style="height:${Math.max(3,v/max*46)}px"></i>${'SMTWTFS'[d.getDay()]}</div>`}).join('')}</div>
+    </div>
+    <div><div class="eyebrow" style="margin-bottom:4px">Badges</div><p class="muted" style="margin:0 0 12px;font-size:13px">Each medal shows a Hebrew numeral: ג is 3, ז is 7, כ is 20, ק is 100.</p>
+      <div class="badges">${BADGES.map(b=>`<div class="badge ${S.badges[b.id]?'got':''}"><div class="medal" lang="he">${b.g}</div><b>${b.t}</b><span>${b.d}</span></div>`).join('')}</div>
+    </div>
+    ${S.tests.length?`<div class="card"><div class="eyebrow">Test scores</div>${S.tests.slice(-6).reverse().map(t=>`<div class="setting"><span>${esc(t.kind==='exam'?'Progress test':(UNITS.find(u=>u.id===t.kind)||{}).title||'Test')}<br><small class="muted">${t.d}</small></span><b style="color:${t.score>=80?'var(--good)':'var(--accent)'};font-size:20px">${t.score}%</b></div>`).join('')}</div>`:''}
+    <div class="card"><div class="eyebrow">Settings</div>
+      <div class="setting"><span>Hebrew forms for me</span><div class="pick"><button data-me="m" aria-pressed="${S.set.me==='m'}">Masculine</button><button data-me="f" aria-pressed="${S.set.me==='f'}">Feminine</button></div></div>
+      <div class="setting"><span>Talking with</span><div class="pick"><button data-them="f" aria-pressed="${S.set.them==='f'}">Her</button><button data-them="m" aria-pressed="${S.set.them==='m'}">Him</button></div></div>
+      <div class="setting"><span>Vowel marks</span><div class="pick"><button data-niq="1" aria-pressed="${S.set.niq}">On</button><button data-niq="0" aria-pressed="${!S.set.niq}">Off</button></div></div>
+      <div class="setting"><span>Transliteration</span><div class="pick"><button data-tr="1" aria-pressed="${S.set.tr}">On</button><button data-tr="0" aria-pressed="${!S.set.tr}">Off</button></div></div>
+      <div class="setting"><span>Speech speed</span><div class="pick">${[[0.7,'Slow'],[0.85,'Normal'],[1,'Fast']].map(([r,l])=>`<button data-rate="${r}" aria-pressed="${S.set.rate==r}">${l}</button>`).join('')}</div></div>
+    </div>
+    <div class="card"><div class="eyebrow">Sound</div>
+      <p style="margin:8px 0">${heVoices.length?`Using the voice <b>${esc(heVoices[0].name)}</b>.`:'No Hebrew voice was found yet. On iPhone, go to Settings › Accessibility › Spoken Content › Voices › Hebrew and download one. On Android, install Hebrew in Google Text-to-speech.'}</p>
+      <button class="btn ghost" data-act="testvoice">Test: שָׁלוֹם</button>
+    </div>
+    <div class="card"><div class="eyebrow">Add to your phone</div>
+      <p style="margin:8px 0 0">iPhone: open this page in Safari, tap Share, then <b>Add to Home Screen</b>. Android: open the browser menu and tap <b>Add to Home screen</b>.</p>
+    </div>
+    <div class="card" id="moveBox"><div class="eyebrow">Move my progress</div>
+      <p style="margin:8px 0">Copy a progress code here, then paste it into Daber on another phone or browser to bring your XP, streak and badges along.</p>
+      <div class="row"><button class="btn ghost" data-act="export">Copy my code</button><button class="btn ghost" data-act="import">Paste a code</button></div>
+      <div id="moveOut"></div>
+    </div>
+    <div class="card" id="resetBox"><button class="btn ghost" data-act="reset">Reset all progress</button></div>
+  </div>`;
+}
+function renderOnboarding(){
+  const pick=S._onbMe||null;
+  $('#main').innerHTML=`<div class="stack onb">
+    <span class="he big" lang="he">שָׁלוֹם!</span>
+    <h2>Let's get you talking.</h2>
+    <p style="margin:0">Hebrew verbs and adjectives change with who is speaking. A man says <span class="he" lang="he" style="font-size:20px">אֲנִי אוֹהֵב</span> (ani ohev) for "I love", and a woman says <span class="he" lang="he" style="font-size:20px">אֲנִי אוֹהֶבֶת</span> (ani ohevet). Which forms should Daber teach you?</p>
+    <div class="row">
+      <button class="choice" data-onb="m" aria-pressed="${pick==='m'}"><span class="he" lang="he">אֲנִי אוֹהֵב</span><span>Masculine forms</span></button>
+      <button class="choice" data-onb="f" aria-pressed="${pick==='f'}"><span class="he" lang="he">אֲנִי אוֹהֶבֶת</span><span>Feminine forms</span></button>
+    </div>
+    <p style="margin:0">Who are you practicing to talk with? Phrases like "how are you?" change for her or him too.</p>
+    <div class="row">
+      <button class="choice" data-onbt="f" aria-pressed="${S.set.them==='f'}"><span class="he" lang="he">אַתְּ</span><span>Her</span></button>
+      <button class="choice" data-onbt="m" aria-pressed="${S.set.them==='m'}"><span class="he" lang="he">אַתָּה</span><span>Him</span></button>
+    </div>
+    <button class="btn" id="onbGo" ${pick?'':'disabled'}>Start learning</button>
+    <p class="muted" style="margin:0;font-size:13px">You can change this any time under Me.</p>
+  </div>`;
+  document.querySelectorAll('[data-onb]').forEach(b=>b.onclick=()=>{S._onbMe=b.dataset.onb;renderOnboarding();});
+  document.querySelectorAll('[data-onbt]').forEach(b=>b.onclick=()=>{S.set.them=b.dataset.onbt;renderOnboarding();});
+  $('#onbGo').onclick=()=>{S.set.me=S._onbMe;delete S._onbMe;save();say('שָׁלוֹם');render();};
+}
+function bindView(){
+  const m=$('#main');
+  m.querySelectorAll('[data-track]').forEach(b=>b.onclick=()=>{track=b.dataset.track;render();});
+  m.querySelectorAll('[data-unit]').forEach(b=>b.onclick=()=>{
+    const u=UNITS.find(x=>x.id===b.dataset.unit);
+    if(!unitUnlocked(u)){ const list=UNITS.filter(x=>x.track===u.track); toast('Finish "'+prevUnit(u).title+'" to unlock this.'); return; }
+    startLesson({unit:u});
+  });
+  m.querySelectorAll('[data-say]').forEach(b=>b.onclick=()=>sayItem(ITEMS[b.dataset.say],b.hasAttribute('data-slow')));
+  m.querySelectorAll('[data-star]').forEach(b=>b.onclick=()=>{S.stars=S.stars||{};const k=b.dataset.star;S.stars[k]=!S.stars[k];if(!S.stars[k])delete S.stars[k];save();render();});
+  m.querySelectorAll('[data-set]').forEach(b=>b.onclick=()=>{const k=b.dataset.set;S.set[k]=!S.set[k];save();render();});
+  m.querySelectorAll('[data-fav]').forEach(b=>b.onclick=()=>{favOnly=!favOnly;render();});
+  const ps=$('#phraseSearch'); if(ps){ ps.oninput=()=>{phraseQuery=ps.value;const pos=ps.selectionStart;render();const n=$('#phraseSearch');n.focus();n.setSelectionRange(pos,pos);}; }
+  m.querySelectorAll('[data-me]').forEach(b=>b.onclick=()=>{S.set.me=b.dataset.me;save();render();});
+  m.querySelectorAll('[data-them]').forEach(b=>b.onclick=()=>{S.set.them=b.dataset.them;save();render();});
+  m.querySelectorAll('[data-niq]').forEach(b=>b.onclick=()=>{S.set.niq=b.dataset.niq==='1';save();render();});
+  m.querySelectorAll('[data-tr]').forEach(b=>b.onclick=()=>{S.set.tr=b.dataset.tr==='1';save();render();});
+  m.querySelectorAll('[data-rate]').forEach(b=>b.onclick=()=>{S.set.rate=+b.dataset.rate;save();render();say('שָׁלוֹם, מָה נִשְׁמָע?');});
+  m.querySelectorAll('[data-act]').forEach(b=>b.onclick=()=>practiceAct(b.dataset.act));
+}
+function practiceAct(a){
+  const seen=seenItems();
+  if(a==='testvoice'){ say('שָׁלוֹם'); setTimeout(()=>{loadVoices();if(tab==='me')render();},800); return; }
+  if(a==='export'){
+    const code='DABER1:'+btoa(unescape(encodeURIComponent(JSON.stringify(S))));
+    $('#moveOut').innerHTML=`<textarea class="search" id="codeOut" rows="3" readonly style="margin:10px 0 0;font-size:12px">${esc(code)}</textarea>`;
+    const ta=$('#codeOut');
+    (navigator.clipboard?navigator.clipboard.writeText(code):Promise.reject()).then(()=>toast('Code copied. Paste it into Daber on your other device.')).catch(()=>{ta.focus();ta.select();toast('Select the code and copy it.');});
+    return;
+  }
+  if(a==='import'){
+    $('#moveOut').innerHTML=`<textarea class="search" id="codeIn" rows="3" placeholder="Paste your DABER1: code here" style="margin:10px 0 8px;font-size:12px"></textarea><button class="btn" id="codeGo">Load this progress</button>`;
+    $('#codeGo').onclick=()=>{
+      try{
+        const raw=$('#codeIn').value.trim().replace(/^DABER1:/,'');
+        const o=JSON.parse(decodeURIComponent(escape(atob(raw))));
+        if(typeof o.xp!=='number') throw 0;
+        S={...fresh(),...o,set:{...fresh().set,...(o.set||{})},updated:Date.now()};
+        save(); toast('Progress loaded: '+S.xp+' XP.'); render();
+      }catch(e){ toast('That code didn\'t work. Copy the whole thing, starting with DABER1:'); }
+    };
+    return;
+  }
+  if(a==='reset'){
+    $('#resetBox').innerHTML=`<p style="margin:0 0 10px"><b>Erase all XP, streaks and badges?</b> This can't be undone.</p><div class="row"><button class="btn ghost" id="rsNo">Keep my progress</button><button class="btn" id="rsYes">Erase</button></div>`;
+    $('#rsNo').onclick=render;
+    $('#rsYes').onclick=()=>{const keep=S.set;S=fresh();S.set=keep;save();toast('Progress erased.');tab='learn';render();};
+    return;
+  }
+  if(a==='review'){ if(seen.length<4){toast('Finish a lesson first.');return;} startLesson({review:true}); return; }
+  if(a==='rush'){ startRush(); return; }
+  if(a==='listen'){ const ph=seen.filter(k=>ITEMS[k].kind==='phrase'); startLesson({drill:'hearP',pool:ph.length>=4?ph:P('greet').concat(P('sweet')),title:'Ear training'}); return; }
+  if(a==='speak'){ const ph=seen.filter(k=>ITEMS[k].kind==='phrase'); startLesson({drill:'say',pool:ph.length>=4?ph:P('greet').concat(P('sweet')),title:'Repeat after me'}); return; }
+  if(a==='cards'){ openDecks(); return; }
+  if(a==='exam'){ if(seen.length<15){toast('Learn 15 items first. You have '+seen.length+'.');return;} startLesson({exam:true}); return; }
+}
+
+/* ---------- question builders ---------- */
+function distract(item, pool, n, keyFn){
+  const ans=keyFn(item), seen=new Set([ans]), out=[];
+  const like=k=>ITEMS[k]&&ITEMS[k].kind===item.kind&&!!ITEMS[k].vowel===!!item.vowel;
+  const sources=[pool.filter(like), Object.keys(ITEMS).filter(like)];
+  for(const src of sources){ for(const id of shuffle(src)){ const it=ITEMS[id]; if(it===item) continue; const k=keyFn(it); if(seen.has(k)) continue; seen.add(k); out.push(it); if(out.length>=n) return out; } }
+  return out;
+}
+function makeQ(item, type, pool){
+  const glyphKey=it=>it.snd;
+  if(item.kind==='glyph'){
+    const sameKind=pool.filter(k=>ITEMS[k].kind==='glyph');
+    if(type==='g2s'){ const d=distract(item,sameKind,3,glyphKey); return {type,item,title:'What sound does this make?',big:item.ch,opts:shuffle([item,...d]).map(it=>({label:it.snd,ok:it===item})),answer:item.snd}; }
+    if(type==='s2g'||type==='hear'){ const d=distract(item,sameKind,3,glyphKey); return {type,item,title:type==='hear'?'Which one did you hear?':`Which one says "${item.snd}"?`,audio:type==='hear',opts:shuffle([item,...d]).map(it=>({he:it.ch,ok:it===item})),answer:item.ch}; }
+    if(type==='name'){ const d=distract(item,sameKind,3,it=>it.nm); return {type,item,title:'What is it called?',big:item.ch,opts:shuffle([item,...d]).map(it=>({label:it.nm,ok:it===item})),answer:item.nm}; }
+    if(type==='read'){ const d=distract(item,sameKind,3,it=>it.wt); return {type,item,title:'Read this word',mid:item.w,opts:shuffle([item,...d]).map(it=>({label:it.wt,ok:it===item})),answer:`${item.wt}, “${item.we}”`,sayText:item.w}; }
+  }
+  const sameKind=pool.filter(k=>ITEMS[k].kind==='phrase');
+  if(type==='p2e'){ const d=distract(item,sameKind,3,it=>it.en); return {type,item,title:'What does this mean?',mid:heOf(item),tr:true,list:true,opts:shuffle([item,...d]).map(it=>({label:it.en,ok:it===item})),answer:item.en}; }
+  if(type==='e2p'){ const d=distract(item,sameKind,3,it=>it.en); return {type,item,title:`How do you say “${item.en}”?`,list:true,opts:shuffle([item,...d]).map(it=>({he:heOf(it),ok:it===item})),answer:heOf(item)}; }
+  if(type==='hearP'){ const d=distract(item,sameKind,3,it=>it.en); return {type,item,title:'What did you hear?',audio:true,list:true,opts:shuffle([item,...d]).map(it=>({label:it.en,ok:it===item})),answer:item.en}; }
+  if(type==='build'){
+    const words=heOf(item).split(' ');
+    const extra=distract(item,sameKind,4,it=>it.en).flatMap(it=>heOf(it).split(' ')).filter(w=>!words.includes(w));
+    const bank=shuffle([...words,...pickN([...new Set(extra)],Math.min(3,Math.max(1,5-words.length)))]);
+    return {type,item,title:`Build: “${item.en}”`,bank,target:words.join(' '),answer:heOf(item)};
+  }
+  if(type==='speak') return {type,item,title:'Say it out loud',mid:heOf(item),tr:true,answer:heOf(item)};
+  if(type==='say') return item.kind==='glyph'
+    ? {type,item,title:'Repeat after me',say:item.name,targets:[item.name,item.ch,item.w],answer:item.name}
+    : {type,item,title:'Repeat after me',say:heOf(item),targets:[heOf(item)],answer:heOf(item)};
+}
+function typesFor(item, mode){
+  if(item.kind==='glyph'){
+    if(mode==='mix') return ['read','read','g2s','name'];
+    return item.vowel?['g2s','s2g','read','name']:['g2s','s2g','hear','name','read','say'];
+  }
+  const n=heOf(item).split(' ').length;
+  const t=['p2e','e2p','hearP','say'];
+  if(n>=2&&n<=6) t.push('build','build');
+  return t;
+}
+function buildQuestions(items, n, mode, pool){
+  const qs=[]; let order=[];
+  while(order.length<n) order=order.concat(shuffle(items));
+  order=order.slice(0,n);
+  const lastType={};
+  for(const id of order){
+    const it=ITEMS[id];
+    let types=typesFor(it,mode).filter(t=>t!==lastType[id]&&(mode!=='test'||(t!=='say'&&t!=='speak')));
+    const t=types[Math.random()*types.length|0]; lastType[id]=t;
+    qs.push(makeQ(it,t,pool));
+  }
+  return qs;
+}
+
+/* ---------- lesson engine ---------- */
+let LS=null;
+function startLesson(opt){
+  let items, qs, intro=[], title, pool;
+  if(opt.unit&&opt.unit.test){
+    title=opt.unit.title; items=opt.unit.items; pool=items;
+    qs=buildQuestions(pickN(items,15),15,'test',pool);
+  } else if(opt.exam){
+    title='Progress test'; items=seenItems(); pool=items;
+    qs=buildQuestions(pickN(items,20),20,'test',pool);
+  } else if(opt.unit){
+    const u=opt.unit; title=u.title; items=u.items;
+    pool=UNITS.filter(x=>x.track===u.track&&(S.lessons[x.id]||x===u)).flatMap(x=>x.items);
+    if(!u.mix) intro=items.filter(id=>!S.stats[id]);
+    if(u.mix) items=pickN(items.filter(id=>S.stats[id]).concat(items),14);
+    qs=buildQuestions(items, u.mix?12:Math.max(10,Math.min(12,items.length+5)), u.mix?'mix':null, pool);
+  } else if(opt.review){
+    title='Smart review';
+    const seen=seenItems();
+    const score=id=>{const s=S.stats[id];return (s.c||0)-2*(s.w||0)+Math.random()*1.5;};
+    items=seen.sort((a,b)=>score(a)-score(b)).slice(0,8); pool=seen;
+    qs=buildQuestions(items,12,null,pool);
+  } else {
+    title=opt.title; pool=opt.pool; items=pickN(pool,10);
+    qs=items.map(id=>makeQ(ITEMS[id],opt.drill,pool));
+  }
+  LS={opt,title,unit:opt.unit,test:!!(opt.exam||(opt.unit&&opt.unit.test)),qs,intro,introI:0,i:0,total:qs.length,correct:0,wrong:0,combo:0,best:0,xp:0,firstTry:new Set(),missed:new Set()};
+  $('#sheet').hidden=false;
+  if(intro.length) renderIntro(); else renderQ();
+}
+function lessonBar(progress){
+  return `<div class="lbar"><button class="x" id="quit" aria-label="Quit">${ICON.x}</button><div class="bar"><i style="width:${Math.round(progress*100)}%"></i></div><div class="combo">${LS.combo>=3?'×'+LS.combo:''}</div></div>`;
+}
+function bindQuit(){ $('#quit').onclick=()=>{ try{recActive&&recActive.abort();}catch(e){} window.speechSynthesis?.cancel?.(); clearInterval(RUSH?.timer); RUSH=null; LS=null; $('#sheet').hidden=true; render(); }; }
+function renderIntro(){
+  const it=ITEMS[LS.intro[LS.introI]];
+  const el=$('#sheetIn');
+  if(it.kind==='glyph'){
+    el.innerHTML=lessonBar(0)+`<div class="qbody"><div class="eyebrow">New ${it.vowel?'vowel sign':'letter'} · ${LS.introI+1} of ${LS.intro.length}</div>
+      <div class="learncard">
+        <div class="glyph" lang="he">${esc(it.ch)}</div>
+        <div class="name">${esc(it.nm)} <span class="he muted" lang="he" style="font-size:22px">${esc(it.name)}</span></div>
+        <span class="snd">sounds like: ${esc(it.snd)}</span>
+        <button class="btn ghost" id="hearName" style="width:auto">${ICON.play} Hear “${esc(it.nm)}”</button>
+        <div class="tip">${esc(it.tip)}</div>
+        <button class="example" id="exPlay"><span>${ICON.play}</span><span style="text-align:start"><b>${esc(it.wt)}</b><br><span class="muted">${esc(it.we)}</span></span><span class="he" lang="he">${esc(show(it.w))}</span></button>
+      </div></div>
+      ${introNav()}`;
+    $('#exPlay').onclick=()=>say(it.w);
+    $('#hearName').onclick=()=>say(it.name);
+  } else {
+    const he=heOf(it);
+    el.innerHTML=lessonBar(0)+`<div class="qbody"><div class="eyebrow">New phrase · ${LS.introI+1} of ${LS.intro.length}</div>
+      <div class="learncard">
+        <div class="glyph mid" lang="he">${esc(show(he))}</div>
+        <div class="prompt"><span class="tr" style="font-size:20px">${esc(trOf(it))}</span><b style="font-size:20px">${esc(it.en)}</b></div>
+        <div class="playrow"><button class="bigplay" id="p1" aria-label="Play">${ICON.play}</button><button class="bigplay" id="p2" style="background:var(--soft);color:var(--ink);box-shadow:0 5px 0 var(--line)" aria-label="Play slowly">${ICON.slow}</button></div>
+        ${it.partner?`<div class="tip">This is something you're likely to hear from ${S.set.them==='f'?'her':'him'}. Learn to recognize it.</div>`:(typeof it.heV==='object'?'<div class="tip">This phrase changes with gender. You\'re seeing the form that fits your settings.</div>':'')}
+      </div></div>
+      ${introNav()}`;
+    $('#p1').onclick=()=>say(he); $('#p2').onclick=()=>say(he,true);
+    setTimeout(()=>say(he),250);
+  }
+  bindQuit();
+  $('#next').onclick=()=>{ S.stats[it.id]=S.stats[it.id]||{c:0,w:0}; LS.introI++; if(LS.introI<LS.intro.length) renderIntro(); else renderQ(); };
+  $('#prev').onclick=()=>{ if(LS.introI>0){ LS.introI--; renderIntro(); } };
+  swipe($('.qbody'),()=>$('#next').click(),()=>$('#prev').click());
+}
+function introNav(){
+  return `<div class="feedback"><div class="row"><button class="btn ghost" id="prev" ${LS.introI?'':'disabled'}>${ICON.left} Back</button><button class="btn" id="next">${LS.introI===LS.intro.length-1?'Start quiz':'Next'} ${ICON.right}</button></div></div>`;
+}
+function swipe(el,onNext,onPrev){
+  if(!el) return; let x0=null,y0=0;
+  el.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY;},{passive:true});
+  el.addEventListener('touchend',e=>{ if(x0==null) return; const dx=e.changedTouches[0].clientX-x0, dy=e.changedTouches[0].clientY-y0; x0=null;
+    if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5){ dx<0?onNext():onPrev(); } },{passive:true});
+}
+function renderQ(){
+  const q=LS.qs[LS.i]; const el=$('#sheetIn');
+  let body=`<div class="qtitle">${esc(q.title)}</div>`;
+  if(q.big) body+=`<div class="glyph" lang="he">${esc(q.big)}</div>`;
+  if(q.mid) body+=`<div class="prompt"><div class="glyph mid" lang="he">${esc(show(q.mid))}</div>${q.tr&&S.set.tr?`<span class="tr">${esc(trOf(q.item))}</span>`:''}</div>`;
+  if(q.audio) body+=`<div class="playrow"><button class="bigplay" id="qplay" aria-label="Play">${ICON.play}</button><button class="bigplay" id="qslow" style="background:var(--soft);color:var(--ink);box-shadow:0 5px 0 var(--line)" aria-label="Play slowly">${ICON.slow}</button></div>`;
+  let foot='';
+  if(q.opts){
+    body+=`<div class="opts ${q.list?'list':''}">${q.opts.map((o,i)=>`<button class="opt" data-o="${i}">${o.he?heSpan(o.he):esc(o.label)}</button>`).join('')}</div>`;
+  } else if(q.type==='build'){
+    body+=`<div class="tray" id="tray" aria-label="Your answer"></div><div class="bank" id="bank">${q.bank.map((w,i)=>`<button class="tile" data-t="${i}" lang="he">${esc(show(w))}</button>`).join('')}</div>`;
+    foot=`<div class="feedback" id="fb"><button class="btn" id="check" disabled>Check</button></div>`;
+  } else if(q.type==='speak'){
+    body+=`<div class="playrow"><button class="bigplay" id="qplay" aria-label="Play">${ICON.play}</button><button class="bigplay" id="qslow" style="background:var(--soft);color:var(--ink);box-shadow:0 5px 0 var(--line)" aria-label="Play slowly">${ICON.slow}</button></div><p class="muted" style="text-align:center;margin:0">${esc(q.item.en)}. Say it aloud first, then play the audio and compare.</p>`;
+    foot=`<div class="feedback" id="fb"><div class="row"><button class="btn ghost" id="sp0">Still tricky</button><button class="btn sea" id="sp1">I nailed it</button></div></div>`;
+  } else if(q.type==='say'){
+    body+= q.item.kind==='glyph'
+      ? `<div class="glyph" lang="he">${esc(q.item.ch)}</div><div class="prompt"><b style="font-size:20px">Say “${esc(q.item.nm)}”</b>${heSpan(q.item.name)}</div>`
+      : `<div class="prompt"><div class="glyph mid" lang="he">${esc(show(q.say))}</div>${S.set.tr?`<span class="tr">${esc(trOf(q.item))}</span>`:''}<span class="muted">${esc(q.item.en)}</span></div>`;
+    body+=`<div class="playrow"><button class="bigplay" id="qplay" aria-label="Play">${ICON.play}</button><button class="bigplay" id="qslow" style="background:var(--soft);color:var(--ink);box-shadow:0 5px 0 var(--line)" aria-label="Play slowly">${ICON.slow}</button></div>
+      <div class="micwrap"><button class="mic" id="mic" aria-label="Record yourself">${ICON.mic}</button><div class="heard muted" id="heard">Listen, then tap the mic and say it.</div></div>`;
+    foot=`<div class="feedback" id="fb"><button class="btn ghost" id="skipSay">Can't talk right now</button></div>`;
+  }
+  el.innerHTML=lessonBar(LS.i/LS.qs.length)+`<div class="qbody">${body}</div>`+(foot||'<div class="feedback" id="fb" hidden></div>');
+  bindQuit();
+  const sayText=q.say||(q.item.kind==='glyph'?(q.type==='hear'?q.item.name:q.item.w):heOf(q.item));
+  if($('#qplay')){ $('#qplay').onclick=()=>say(sayText); $('#qslow').onclick=()=>say(sayText,true); }
+  if(q.audio||q.type==='say') setTimeout(()=>say(sayText),250);
+  if(q.type==='say'){
+    $('#mic').onclick=()=>recordSay(q);
+    $('#skipSay').onclick=()=>{ LS.total=Math.max(1,LS.total-1); LS.i++; if(LS.i<LS.qs.length) renderQ(); else finishLesson(); };
+    if(micBroken||!SRec()) selfRateFallback();
+  }
+  if(q.opts) el.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{
+    const o=q.opts[+b.dataset.o];
+    el.querySelectorAll('.opt').forEach((x,i)=>{x.disabled=true; if(q.opts[i].ok) x.classList.add('right');});
+    if(!o.ok) b.classList.add('wrong');
+    answer(o.ok);
+  });
+  if(q.type==='build'){
+    const tray=$('#tray'), picked=[];
+    const draw=()=>{ tray.innerHTML=picked.map((i,k)=>`<button class="tile" data-k="${k}" lang="he">${esc(show(q.bank[i]))}</button>`).join('');
+      el.querySelectorAll('#bank .tile').forEach(t=>t.classList.toggle('used',picked.includes(+t.dataset.t)));
+      tray.querySelectorAll('.tile').forEach(t=>t.onclick=()=>{picked.splice(+t.dataset.k,1);draw();});
+      $('#check').disabled=!picked.length; };
+    el.querySelectorAll('#bank .tile').forEach(t=>t.onclick=()=>{ if(picked.includes(+t.dataset.t))return; picked.push(+t.dataset.t); say(q.bank[+t.dataset.t]); draw(); });
+    $('#check').onclick=()=>answer(picked.map(i=>q.bank[i]).join(' ')===q.target);
+  }
+  if(q.type==='speak'){ $('#sp1').onclick=()=>answer(true,true); $('#sp0').onclick=()=>answer(false,true); }
+}
+function answer(ok, selfRated, extra){
+  const q=LS.qs[LS.i], id=q.item.id;
+  const st=S.stats[id]=S.stats[id]||{c:0,w:0};
+  if(ok){ st.c++; LS.combo++; LS.best=Math.max(LS.best,LS.combo);
+    const first=!LS.missed.has(q); let gain=first?10:5; if(LS.combo>0&&LS.combo%5===0) gain+=5;
+    LS.xp+=gain; if(first) LS.correct++;
+  } else { st.w++; LS.combo=0; LS.wrong++;
+    if(!LS.missed.has(q)&&!selfRated){ LS.missed.add(q); if(!LS.test) LS.qs.push(q); }
+    if(selfRated) LS.xp+=3;
+  }
+  st.last=Date.now();
+  const fb=$('#fb'); fb.hidden=false;
+  fb.className='feedback '+(ok?'good':'bad');
+  const praise=['מְצֻיָּן! Excellent!','יָפֶה! Nice!','כׇּל הַכָּבוֹד! Well done!','סַבָּבָה! Got it!','וָאוּ! Wow!'];
+  const showAns=q.item.kind==='phrase'||q.type==='read'||q.type==='s2g'||q.type==='hear';
+  const ansHtml = q.type==='read'?`${heSpan(q.item.w)} &nbsp;${esc(q.answer)}`
+    : q.item.kind==='phrase'?`${heSpan(heOf(q.item))}<br>${S.set.tr?`<i>${esc(trOf(q.item))}</i> · `:''}${esc(q.item.en)}`
+    : q.type==='s2g'||q.type==='hear'?`${heSpan(q.item.ch)} ${esc(q.item.nm)}, “${esc(q.item.snd)}”`
+    : `${heSpan(q.item.ch)} ${esc(q.item.nm)}, “${esc(q.item.snd)}”`;
+  const graded=extra&&extra.stars!=null;
+  const msg=graded?(extra.stars===3?'מְצֻיָּן! That sounded great.':extra.stars===2?'Close! Pretty good.':'Not quite. Listen once more and try again.')
+    :ok?(selfRated?'Great. Keep using it.':praise[Math.random()*praise.length|0]):(selfRated?'You\'ll see it again soon.':'Not quite.');
+  fb.innerHTML=`<div class="msg">${msg}</div>
+    ${(!ok||showAns)&&q.type!=='say'?`<div class="ans">${ok?'':'Answer: '}${ansHtml}</div>`:''}
+    ${graded?`<div class="row"><button class="btn ghost" id="again">${ICON.mic} Try again</button><button class="btn" id="cont">Continue</button></div>`:`<button class="btn" id="cont">Continue</button>`}`;
+  if(graded) $('#again').onclick=()=>recordSay(q,true);
+  if(q.type==='say'||q.type==='speak'){ if(q.type==='speak'&&ok) say(heOf(q.item)); }
+  else if(q.item.kind==='phrase') say(heOf(q.item));
+  else if(q.type==='read') say(q.item.w);
+  else say(q.item.name);
+  $('#cont').onclick=()=>{ LS.i++; if(LS.i<LS.qs.length) renderQ(); else finishLesson(); };
+  $('#cont').focus();
+  const c=document.querySelector('.combo'); if(c) c.textContent=LS.combo>=3?'×'+LS.combo:'';
+}
+function addXP(n){
+  const d=dayKey();
+  if(S.lastDay!==d){ S.streak = S.lastDay===yesterday()? S.streak+1 : 1; S.lastDay=d; }
+  S.bestStreak=Math.max(S.bestStreak||0,S.streak);
+  S.xp+=n; S.days[d]=(S.days[d]||0)+n;
+}
+function checkBadges(){
+  const got=[]; for(const b of BADGES){ if(!S.badges[b.id]&&BADGE_TEST[b.id](S)){ S.badges[b.id]=dayKey(); got.push(b); } } return got;
+}
+function finishLesson(){
+  if(LS.test){ finishTest(); return; }
+  const perfect=LS.wrong===0&&LS.qs.length>=8&&LS.opt.drill!=='speak';
+  let xp=LS.xp+10+(perfect?20:0);
+  const lvBefore=levelOf(S.xp), goalBefore=(S.days[dayKey()]||0)>=DAILY_GOAL;
+  if(LS.unit) S.lessons[LS.unit.id]=(S.lessons[LS.unit.id]||0)+1;
+  if(perfect) S.flags.perfect=true;
+  addXP(xp);
+  const newBadges=checkBadges(); save();
+  const lvAfter=levelOf(S.xp), goalNow=(S.days[dayKey()]||0)>=DAILY_GOAL;
+  const acc=Math.round(LS.correct/LS.total*100);
+  const notes=[];
+  if(lvAfter>lvBefore) notes.push(`<b>Level ${lvAfter}!</b> You leveled up.`);
+  if(goalNow&&!goalBefore) notes.push('<b>Daily goal reached.</b> Your streak is safe today.');
+  newBadges.forEach(b=>notes.push(`<b>New badge: ${b.t}.</b> ${b.d}.`));
+  if(perfect) notes.push('<b>Flawless.</b> +20 bonus XP for no mistakes.');
+  $('#sheetIn').innerHTML=`<div class="qbody"><div class="done-hero">
+      <span class="he" lang="he">${perfect?'מוּשְׁלָם!':acc>=70?'כׇּל הַכָּבוֹד!':'יוֹפִי!'}</span>
+      <h2>${perfect?'Perfect!':acc>=70?'Well done!':'Nice work!'}</h2>
+      <p class="muted" style="margin:0">${esc(LS.title)} complete</p>
+      <div class="rewards">
+        <div class="reward xp"><b id="xpCount">0</b><span>XP</span></div>
+        <div class="reward acc"><b>${acc}%</b><span>Accuracy</span></div>
+        <div class="reward fire"><b>${S.streak}</b><span>Day streak</span></div>
+      </div>
+      ${notes.map(n=>`<div class="tip" style="width:100%">${n}</div>`).join('')}
+    </div></div>
+    <div class="feedback"><button class="btn" id="doneBtn">Continue</button></div>`;
+  let k=0; const step=()=>{k=Math.min(xp,k+Math.ceil(xp/30));const e=$('#xpCount'); if(e){e.textContent='+'+k; if(k<xp) requestAnimationFrame(step);}}; step();
+  confetti();
+  $('#doneBtn').onclick=()=>{ LS=null; $('#sheet').hidden=true; render(); };
+}
+
+/* ---------- letter rush ---------- */
+let RUSH=null;
+function startRush(){
+  const learned=Object.keys(GLYPHS).map(k=>'L:'+k).filter(id=>S.stats[id]&&!ITEMS[id].vowel);
+  const pool=learned.length>=6?learned:UNITS[0].items.concat(UNITS[1].items);
+  LS={title:'Letter Rush',combo:0,qs:[],i:0,opt:{}};
+  RUSH={pool,score:0,left:60,timer:null,miss:0};
+  $('#sheet').hidden=false;
+  rushQ();
+  RUSH.timer=setInterval(()=>{ if(!RUSH) return; RUSH.left--; const t=$('#rushT'); if(t) t.textContent=RUSH.left+'s'; if(RUSH.left<=0) endRush(); },1000);
+}
+function rushQ(){
+  const it=ITEMS[RUSH.pool[Math.random()*RUSH.pool.length|0]];
+  const q=makeQ(it,'g2s',RUSH.pool);
+  $('#sheetIn').innerHTML=`<div class="lbar"><button class="x" id="quit" aria-label="Quit">${ICON.x}</button><div class="timer" id="rushT" style="flex:1">${RUSH.left}s</div><div class="combo" style="color:var(--ink)">${RUSH.score}</div></div>
+   <div class="qbody"><div class="glyph" lang="he">${esc(it.ch)}</div><div class="opts">${q.opts.map((o,i)=>`<button class="opt" data-o="${i}">${esc(o.label)}</button>`).join('')}</div>
+   <p class="muted" style="text-align:center;margin:0">Wrong answers cost 3 seconds.</p></div>`;
+  bindQuit();
+  document.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{
+    const o=q.opts[+b.dataset.o]; const st=S.stats[it.id]=S.stats[it.id]||{c:0,w:0};
+    if(o.ok){ RUSH.score++; st.c++; b.classList.add('right'); }
+    else { RUSH.left=Math.max(0,RUSH.left-3); RUSH.miss++; st.w++; b.classList.add('wrong'); document.querySelectorAll('.opt').forEach((x,i)=>{ if(q.opts[i].ok) x.classList.add('right'); }); }
+    document.querySelectorAll('.opt').forEach(x=>x.disabled=true);
+    setTimeout(()=>{ if(RUSH&&RUSH.left>0) rushQ(); else if(RUSH) endRush(); }, o.ok?220:700);
+  });
+}
+function endRush(){
+  clearInterval(RUSH.timer);
+  const r=RUSH; RUSH=null;
+  const best=r.score>S.rushBest; if(best) S.rushBest=r.score;
+  const xp=r.score*2+5; addXP(xp); const nb=checkBadges(); save();
+  $('#sheetIn').innerHTML=`<div class="qbody"><div class="done-hero">
+    <span class="he" lang="he">${best?'שִׂיא!':'זְמַן!'}</span>
+    <h2>${best?'New personal best!':'Time\'s up!'}</h2>
+    <div class="rewards"><div class="reward xp"><b>+${xp}</b><span>XP</span></div><div class="reward acc"><b>${r.score}</b><span>Score</span></div><div class="reward fire"><b>${S.rushBest}</b><span>Best</span></div></div>
+    ${nb.map(b=>`<div class="tip" style="width:100%"><b>New badge: ${b.t}.</b> ${b.d}.</div>`).join('')}
+    <p class="muted" style="margin:0">${best?'<span class="he" lang="he" style="font-size:20px">שִׂיא</span> (si) means record.':'<span class="he" lang="he" style="font-size:20px">זְמַן</span> (zman) means time.'}</p>
+  </div></div><div class="feedback"><div class="row"><button class="btn ghost" id="doneBtn">Done</button><button class="btn" id="again">Play again</button></div></div>`;
+  if(best) confetti();
+  $('#doneBtn').onclick=()=>{ LS=null; $('#sheet').hidden=true; render(); };
+  $('#again').onclick=startRush;
+}
+
+/* ---------- tests ---------- */
+function finishTest(){
+  const score=Math.round(LS.correct/LS.total*100), pass=score>=80;
+  const xp=LS.xp+(pass?30:10), kind=LS.unit?LS.unit.id:'exam';
+  S.tests=S.tests||[]; S.tests.push({d:dayKey(),score,kind}); if(S.tests.length>50) S.tests.shift();
+  if(LS.unit){ S.lessons[kind]=(S.lessons[kind]||0)+1; S.testBest=S.testBest||{}; S.testBest[kind]=Math.max(S.testBest[kind]||0,score); }
+  else S.lastTest=Date.now();
+  if(pass) S.flags.passed=true;
+  addXP(xp); const nb=checkBadges(); save();
+  const missed=[...new Set([...LS.missed].map(q=>q.item))];
+  const unit=LS.unit;
+  $('#sheetIn').innerHTML=`<div class="qbody"><div class="done-hero">
+      <span class="he" lang="he">${pass?(S.set.me==='f'?'עָבַרְתְּ!':'עָבַרְתָּ!'):'כִּמְעַט!'}</span>
+      <h2>${pass?'You passed!':'Almost there'}</h2>
+      <p class="muted" style="margin:0">${esc(LS.title)} · ${pass?'עָבַרְתָּ means "you passed".':'כִּמְעַט means "almost". You need 80% to pass.'}</p>
+      <div class="rewards">
+        <div class="reward acc"><b>${score}%</b><span>Score</span></div>
+        <div class="reward xp"><b>+${xp}</b><span>XP</span></div>
+        <div class="reward fire"><b>${LS.correct}/${LS.total}</b><span>Correct</span></div>
+      </div>
+      ${nb.map(b=>`<div class="tip" style="width:100%"><b>New badge: ${b.t}.</b> ${b.d}.</div>`).join('')}
+      ${missed.length?`<div class="missed"><div class="eyebrow" style="background:none;padding:0">Worth another look</div>${missed.map(it=>`<div>${heSpan(heOf(it))}<span>${it.kind==='glyph'?esc(it.nm+', “'+it.snd+'”'):esc(it.en)}</span></div>`).join('')}</div>`:''}
+    </div></div>
+    <div class="feedback"><div class="row">${pass?'':`<button class="btn ghost" id="retake">Retake</button>`}<button class="btn" id="doneBtn">Continue</button></div></div>`;
+  if(pass) confetti();
+  $('#doneBtn').onclick=()=>{ LS=null; $('#sheet').hidden=true; render(); };
+  if(!pass) $('#retake').onclick=()=>startLesson(unit?{unit}:{exam:true});
+}
+
+/* ---------- repeat after me (speech recognition) ---------- */
+let micBroken=false, recActive=null;
+const SRec=()=>window.SpeechRecognition||window.webkitSpeechRecognition;
+function selfRateFallback(){
+  const w=$('.micwrap'); if(!w) return;
+  w.innerHTML=`<div class="tip">Recording isn't available here, so be your own judge: say it out loud, play the audio, and compare.</div>`;
+  $('#fb').innerHTML=`<div class="row"><button class="btn ghost" id="sp0">Still tricky</button><button class="btn sea" id="sp1">I nailed it</button></div>`;
+  $('#sp1').onclick=()=>answer(true,true); $('#sp0').onclick=()=>answer(false,true);
+}
+function normHe(t){
+  return strip(t).replace(/[^א-ת]/g,'')
+    .replace(/[ךםןףץ]/g,c=>({'ך':'כ','ם':'מ','ן':'נ','ף':'פ','ץ':'צ'}[c]))
+    .replace(/[חק]/g,'כ').replace(/ט/g,'ת').replace(/ע/g,'א');
+}
+function lev(a,b){
+  const m=a.length,n=b.length; if(!m) return n; if(!n) return m;
+  let prev=[...Array(n+1).keys()];
+  for(let i=1;i<=m;i++){ const cur=[i]; for(let j=1;j<=n;j++) cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1)); prev=cur; }
+  return prev[n];
+}
+function grade(alts,targets){
+  let best=0,text=alts[0]||'';
+  for(const a of alts){ const na=normHe(a); if(!na) continue;
+    for(const t of targets){ const nt=normHe(t); if(!nt) continue;
+      const sc=1-lev(na,nt)/Math.max(na.length,nt.length); if(sc>best){best=sc;text=a;} } }
+  return {score:best,text};
+}
+function recordSay(q,retry){
+  const SR=SRec();
+  if(!SR||micBroken){ if(!retry) selfRateFallback(); return; }
+  if(recActive){ try{recActive.stop();}catch(e){} return; }
+  window.speechSynthesis?.cancel?.();
+  let r; try{ r=new SR(); }catch(e){ micBroken=true; selfRateFallback(); return; }
+  r.lang='he-IL'; r.interimResults=false; r.maxAlternatives=5; r.continuous=false;
+  let got=false; const heard=()=>$('#heard');
+  r.onresult=e=>{
+    got=true;
+    const alts=[...e.results[0]].map(a=>a.transcript);
+    const {score,text}=grade(alts,q.targets);
+    const stars=score>=.85?3:score>=.6?2:score>=.3?1:0;
+    const h=heard(); if(h) h.innerHTML=`<div class="stars">${[0,1,2].map(i=>`<span class="${i<stars?'on':''}">${ICON.star}</span>`).join('')}</div><div>I heard: ${text?heSpan(text):'<i>nothing clear</i>'}</div>`;
+    if(!retry){ const sk=$('#skipSay'); if(sk) sk.remove(); answer(stars>=2,true,{stars}); }
+  };
+  r.onerror=e=>{
+    if(['not-allowed','service-not-allowed','audio-capture'].includes(e.error)){ micBroken=true; if(!retry) selfRateFallback(); else toast('Recording isn\'t available here.'); }
+    else { const h=heard(); if(h) h.textContent=e.error==='no-speech'?'I didn\'t hear anything. Tap the mic and try again.':'That didn\'t work. Tap the mic to try again.'; }
+  };
+  r.onend=()=>{ recActive=null; const m=$('#mic'); if(m) m.classList.remove('on'); const h=heard(); if(!got&&h&&h.textContent==='Listening…') h.textContent='I didn\'t catch that. Tap the mic and try again.'; };
+  try{ r.start(); recActive=r; $('#mic').classList.add('on'); heard().textContent='Listening…'; }
+  catch(e){ micBroken=true; if(!retry) selfRateFallback(); }
+}
+
+/* ---------- flashcards ---------- */
+let FC=null;
+function decks(){
+  const g=Object.keys(GLYPHS);
+  const d=[
+    {id:'letters',title:'Letters',ids:g.filter(k=>!GLYPHS[k].vowel&&!k.endsWith('_s')).map(k=>'L:'+k)},
+    {id:'finals',title:'Final forms',ids:g.filter(k=>k.endsWith('_s')).map(k=>'L:'+k)},
+    {id:'vowels',title:'Vowel marks',ids:g.filter(k=>GLYPHS[k].vowel).map(k=>'L:'+k)},
+    ...Object.keys(PHRASES).map(cat=>({id:cat,title:CAT_TITLE[cat],ids:P(cat)})),
+  ];
+  const st=Object.keys(S.stars||{}).filter(k=>ITEMS[k]);
+  if(st.length) d.unshift({id:'starred',title:'Starred phrases',ids:st});
+  return d;
+}
+function closeSheet(){ window.speechSynthesis?.cancel?.(); LS=null; FC=null; $('#sheet').hidden=true; render(); }
+function openDecks(){
+  FC=null; LS=null; $('#sheet').hidden=false;
+  const list=decks();
+  $('#sheetIn').innerHTML=`<div class="lbar"><button class="x" id="fcClose" aria-label="Close">${ICON.x}</button><div class="qtitle" style="flex:1">Flashcards</div></div>
+    <div class="qbody"><p class="muted" style="margin:0">Pick a deck. Tap a card to flip it, and use Back and Next (or swipe) to move through.</p>
+    <div class="stack">${list.map(d=>`<button class="card practice-item" data-deck="${d.id}"><span class="ic he ${d.id==='letters'||d.id==='finals'||d.id==='vowels'?'':'sm'}" lang="he">${esc(show(heOf(ITEMS[d.ids[0]])))}</span><div><b>${esc(d.title)}</b><span>${d.ids.length} cards</span></div></button>`).join('')}</div></div>`;
+  $('#fcClose').onclick=closeSheet;
+  document.querySelectorAll('[data-deck]').forEach(b=>b.onclick=()=>{ const d=list.find(x=>x.id===b.dataset.deck); FC={d,ids:d.ids.slice(),i:0,flip:false}; renderCard(); });
+}
+function renderCard(){
+  const it=ITEMS[FC.ids[FC.i]], g=it.kind==='glyph', he=heOf(it), last=FC.i===FC.ids.length-1;
+  const back=g?`<div class="name">${esc(it.nm)} ${heSpan(it.name)}</div><span class="snd">sounds like: ${esc(it.snd)}</span><div>${heSpan(it.w)} <span class="muted">${esc(it.wt)}, “${esc(it.we)}”</span></div>`
+    :`${S.set.tr?`<span class="tr" style="font-size:20px">${esc(trOf(it))}</span>`:''}<b style="font-size:20px">${esc(it.en)}</b>`;
+  $('#sheetIn').innerHTML=`<div class="lbar"><button class="x" id="fcBack" aria-label="Back to decks">${ICON.left}</button><div class="bar"><i style="width:${(FC.i+1)/FC.ids.length*100}%"></i></div><div class="combo" style="color:var(--muted)">${FC.i+1}/${FC.ids.length}</div></div>
+    <div class="qbody">
+      <button class="fc ${FC.flip?'flipped':''}" id="fcCard" aria-label="Flip card">
+        <div class="glyph ${g?'':'mid'}" lang="he">${esc(show(he))}</div>
+        ${FC.flip?back:'<span class="muted">Tap to flip</span>'}
+      </button>
+      <div class="playrow"><button class="iconbtn" id="fcPlay" aria-label="Play">${ICON.play}</button><button class="iconbtn" id="fcSlow" aria-label="Play slowly">${ICON.slow}</button><button class="iconbtn" id="fcShuffle" aria-label="Shuffle deck">${ICON.shuffle}</button></div>
+    </div>
+    <div class="feedback"><div class="row"><button class="btn ghost" id="fcPrev" ${FC.i?'':'disabled'}>${ICON.left} Back</button><button class="btn" id="fcNext">${last?'Done':'Next'} ${last?'':ICON.right}</button></div></div>`;
+  const text=g?it.name:he;
+  $('#fcBack').onclick=openDecks;
+  $('#fcCard').onclick=()=>{ FC.flip=!FC.flip; renderCard(); if(FC.flip) say(text); };
+  $('#fcPlay').onclick=()=>say(text); $('#fcSlow').onclick=()=>say(text,true);
+  $('#fcShuffle').onclick=()=>{ FC.ids=shuffle(FC.ids); FC.i=0; FC.flip=false; renderCard(); toast('Shuffled'); };
+  $('#fcPrev').onclick=()=>{ if(FC.i>0){ FC.i--; FC.flip=false; renderCard(); } };
+  $('#fcNext').onclick=()=>{ if(last){ openDecks(); return; } FC.i++; FC.flip=false; renderCard(); };
+  swipe($('.qbody'),()=>{ if(!last) $('#fcNext').click(); },()=>$('#fcPrev').click());
+}
+document.addEventListener('keydown',e=>{
+  if($('#sheet').hidden) return;
+  const k=e.key; const tgt=k==='ArrowRight'?['#fcNext','#next','#cont']:k==='ArrowLeft'?['#fcPrev','#prev']:null;
+  if(!tgt) return; for(const s of tgt){ const b=$(s); if(b&&!b.disabled){ b.click(); e.preventDefault(); return; } }
+});
+
+/* ---------- confetti ---------- */
+function confetti(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const c=$('#confetti'); c.hidden=false; const x=c.getContext('2d');
+  const W=c.width=innerWidth*devicePixelRatio, H=c.height=innerHeight*devicePixelRatio;
+  const cs=getComputedStyle(document.documentElement);
+  const cols=['--accent','--sea','--gold','--good'].map(v=>cs.getPropertyValue(v).trim());
+  const ps=[...Array(90)].map(()=>({x:W/2+(Math.random()-.5)*W*.3,y:H*.35,vx:(Math.random()-.5)*W*.02,vy:-Math.random()*H*.02-H*.006,r:Math.random()*6+4,c:cols[Math.random()*4|0],a:Math.random()*6}));
+  let t=0; (function f(){ x.clearRect(0,0,W,H); ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=H*.0006;p.a+=.15;x.fillStyle=p.c;x.save();x.translate(p.x,p.y);x.rotate(p.a);x.fillRect(-p.r,-p.r/2,p.r*2*devicePixelRatio/2,p.r*devicePixelRatio/2);x.restore();}); if(++t<110) requestAnimationFrame(f); else {x.clearRect(0,0,W,H);c.hidden=true;} })();
+}
+
+render();
+initCloud();
+</script>
+
+<script>if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}</script>
+</body>
+</html>
