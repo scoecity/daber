@@ -218,7 +218,7 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:30;width:100%
 .node.test.next .startflag{color:var(--gold);border-color:var(--gold)}
 .node .score{font-size:12px;font-weight:700;color:var(--gold);line-height:8px}
 .banner{display:flex;flex-direction:column;gap:10px;background:var(--gold-soft);border:2px solid var(--gold);border-radius:16px;padding:14px;margin-bottom:16px}
-.banner b{display:block;font-size:17px}.banner span{font-size:14px}
+.banner b{display:block;font-size:17px}.banner span{font-size:14px}.banner.daily span.he{font-size:inherit}
 .practice-item .ic.sm{font-size:17px}
 .snd{display:inline-block;padding:4px 12px;border-radius:999px;background:var(--gold-soft);color:var(--ink);font-weight:700}
 .micwrap{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
@@ -237,6 +237,21 @@ canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:30;width:100%
 .missed{display:flex;flex-direction:column;gap:6px;width:100%;text-align:start}
 .missed div{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 12px;background:var(--soft);border-radius:10px;font-size:14px}
 .missed .he{font-size:22px;font-weight:700}
+.chat{gap:10px}
+.bub{max-width:88%;padding:10px 14px;border-radius:16px;display:flex;flex-direction:column;gap:3px}
+.bub.her{align-self:flex-start;background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:4px}
+.bub.me{align-self:flex-end;background:color-mix(in srgb,var(--sea) 14%,var(--surface));border:1px solid color-mix(in srgb,var(--sea) 35%,transparent);border-bottom-right-radius:4px;text-align:end}
+.bub.ask{text-align:start}
+.bub .he{font-size:22px;font-weight:700;line-height:1.3}
+.bub.now .he{font-size:28px}
+.bub .tr{color:var(--sea);font-style:italic;font-size:14px}
+.bub .en{font-size:15px}
+.bstars{color:var(--gold);font-size:13px;letter-spacing:2px}
+.linkbtn{color:var(--sea);font-weight:600;font-size:14px;text-align:start;padding:4px 0}
+.chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;direction:rtl;font-family:var(--display)}
+.wchip{padding:4px 10px;border-radius:10px;font-size:22px;font-weight:700}
+.wchip.ok{background:var(--good-bg);color:var(--good)}
+.wchip.miss{background:var(--soft);color:var(--muted);text-decoration:underline wavy var(--bad) 1px;text-underline-offset:5px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
@@ -345,7 +360,7 @@ daily:[
  ['d6',{'m?':'אֲנִי עָיֵף','f?':'אֲנִי עֲיֵפָה'},{'m?':'ani ayef','f?':'ani ayefa'},'I\'m tired'],
  ['d7',{'?f':'בּוֹאִי נֵלֵךְ','?m':'בּוֹא נֵלֵךְ'},{'?f':'boi nelekh','?m':'bo nelekh'},'Let\'s go'],
  ['d8',{'?f':'מָה אַתְּ רוֹצָה לֶאֱכֹל?','?m':'מָה אַתָּה רוֹצֶה לֶאֱכֹל?'},{'?f':'ma at rotsa le\'ekhol?','?m':'ma ata rotse le\'ekhol?'},'What do you want to eat?'],
- ['d9','יַאללָה','yalla','Come on / let\'s do it'],
+ ['d9','יַאלְלָה','yalla','Come on / let\'s do it'],
  ['d10','סַבָּבָה','sababa','Cool / all good'],
  ['d11','אֵין בְּעָיָה','ein be\'aya','No problem'],
  ['d12','רֶגַע','rega','One sec'],
@@ -372,10 +387,10 @@ hear:[
  ['h6',{'?m':'אָכַלְתָּ?','?f':'אָכַלְתְּ?'},{'?m':'akhalta?','?f':'akhalt?'},'Did you eat?'],
  ['h7',{'?m':'תִּתְקַשֵּׁר אֵלַי','?f':'תִּתְקַשְּׁרִי אֵלַי'},{'?m':'titkasher elai','?f':'titkashri elai'},'Call me'],
  ['h8',{'?m':'אַל תִּדְאַג','?f':'אַל תִּדְאֲגִי'},{'?m':'al tid\'ag','?f':'al tid\'agi'},'Don\'t worry'],
- ['h9',{'f?':'הִתְגַּעְגַּעְתְּ אֵלַי?','m?':'הִתְגַּעְגַּעְתָּ אֵלַי?'},{'f?':'hitga\'agat elai?','m?':'hitga\'agata elai?'},'Did you miss me?'],
+ ['h9',{'?m':'הִתְגַּעְגַּעְתָּ אֵלַי?','?f':'הִתְגַּעְגַּעְתְּ אֵלַי?'},{'?m':'hitga\'agata elai?','?f':'hitga\'agat elai?'},'Did you miss me?'],
  ['h10','דַּי!','dai!','Stop it! / Enough!'],
  ['h11','נוּ?','nu?','So? / Well?'],
- ['h12','וַאלָה?','vala?','Really?'],
+ ['h12','וַאלְלָה?','walla?','Really?'],
 ],
 family:[
  ['f1','נָעִים מְאוֹד','na\'im me\'od','Nice to meet you'],
@@ -389,6 +404,73 @@ family:[
  ['f9','חַג שָׂמֵחַ','chag same\'ach','Happy holiday'],
  ['f10','מַזָּל טוֹב','mazal tov','Congratulations'],
 ],
+plans:[
+ ['p1','מָה הַתָּכְנִיּוֹת?','ma hatokhniyot?','What are the plans?'],
+ ['p2',{'?f':'אַתְּ פְּנוּיָה הָעֶרֶב?','?m':'אַתָּה פָּנוּי הָעֶרֶב?'},{'?f':'at pnuya ha\'erev?','?m':'ata panuy ha\'erev?'},'Are you free tonight?'],
+ ['p3',{'?f':'בּוֹאִי נִפָּגֵשׁ','?m':'בּוֹא נִפָּגֵשׁ'},{'?f':'boi nipagesh','?m':'bo nipagesh'},'Let\'s meet up'],
+ ['p4','בְּאֵיזוֹ שָׁעָה?','be\'eizo sha\'a?','What time?'],
+ ['p5','מַתְאִים לִי','matim li','Works for me'],
+ ['p6',{'?f':'מָתַי אַתְּ חוֹזֶרֶת?','?m':'מָתַי אַתָּה חוֹזֵר?'},{'?f':'matai at chozeret?','?m':'matai ata chozer?'},'When are you coming back?'],
+ ['p7',{'m?':'אֲנִי מְאַחֵר קְצָת','f?':'אֲנִי מְאַחֶרֶת קְצָת'},{'m?':'ani me\'acher ktsat','f?':'ani me\'acheret ktsat'},'I\'m running a bit late'],
+ ['p8',{'m?':'אֲנִי כְּבָר מַגִּיעַ','f?':'אֲנִי כְּבָר מַגִּיעָה'},{'m?':'ani kvar magi\'a','f?':'ani kvar magi\'a'},'I\'m almost there'],
+ ['p9',{'?f':'אֲנִי אֶתְקַשֵּׁר אֵלַיִךְ אַחַר כָּךְ','?m':'אֲנִי אֶתְקַשֵּׁר אֵלֶיךָ אַחַר כָּךְ'},{'?f':'ani etkasher elayikh achar kakh','?m':'ani etkasher elekha achar kakh'},'I\'ll call you later'],
+ ['p10',{'?f':'תִּשְׁלְחִי לִי הוֹדָעָה','?m':'תִּשְׁלַח לִי הוֹדָעָה'},{'?f':'tishlechi li hoda\'a','?m':'tishlach li hoda\'a'},'Text me'],
+ ['p11',{'?f':'אַתְּ יְכוֹלָה לְדַבֵּר?','?m':'אַתָּה יָכוֹל לְדַבֵּר?'},{'?f':'at yekhola ledaber?','?m':'ata yakhol ledaber?'},'Can you talk? (on the phone)'],
+ ['p12','אוּלַי נֵלֵךְ לַיָּם?','ulay nelekh layam?','Maybe we\'ll go to the beach?'],
+],
+feel:[
+ ['e1',{'m?':'אֲנִי מִצְטַעֵר','f?':'אֲנִי מִצְטַעֶרֶת'},{'m?':'ani mitsta\'er','f?':'ani mitsta\'eret'},'I\'m sorry'],
+ ['e2','טָעִיתִי','ta\'iti','My mistake / I was wrong'],
+ ['e3',{'?f':'אַתְּ כּוֹעֶסֶת עָלַי?','?m':'אַתָּה כּוֹעֵס עָלַי?'},{'?f':'at ko\'eset alai?','?m':'ata ko\'es alai?'},'Are you mad at me?'],
+ ['e4','מָה קָרָה?','ma kara?','What happened?'],
+ ['e5','הָיָה לִי יוֹם אָרוֹךְ','haya li yom arokh','I had a long day'],
+ ['e6','הָיָה בְּסֵדֶר','haya beseder','It was fine'],
+ ['e7',{'m?':'אֲנִי קְצָת לָחוּץ','f?':'אֲנִי קְצָת לְחוּצָה'},{'m?':'ani ktsat lachuts','f?':'ani ktsat lechutsa'},'I\'m a bit stressed'],
+ ['e8',{'m?':'אֲנִי עָצוּב','f?':'אֲנִי עֲצוּבָה'},{'m?':'ani atsuv','f?':'ani atsuva'},'I\'m sad'],
+ ['e9',{'?f':'אַתְּ צוֹדֶקֶת','?m':'אַתָּה צוֹדֵק'},{'?f':'at tsodeket','?m':'ata tsodek'},'You\'re right'],
+ ['e10',{'mf':'אֲנִי גֵּאֶה בָּךְ','mm':'אֲנִי גֵּאֶה בְּךָ','ff':'אֲנִי גֵּאָה בָּךְ','fm':'אֲנִי גֵּאָה בְּךָ'},{'mf':'ani ge\'e bakh','mm':'ani ge\'e bekha','ff':'ani ge\'a bakh','fm':'ani ge\'a bekha'},'I\'m proud of you'],
+ ['e11',{'?f':'אֲנִי פֹּה בִּשְׁבִילֵךְ','?m':'אֲנִי פֹּה בִּשְׁבִילְךָ'},{'?f':'ani po bishvilekh','?m':'ani po bishvilkha'},'I\'m here for you'],
+ ['e12','עוֹד לֹא','od lo','Not yet'],
+],
+};
+/* Conversations. A "her" turn is a phrase id or inline [he,tr,en] (gendered lines keyed by who she is talking to).
+   A "me" turn lists phrase ids: the first is the model answer, the rest are also accepted. */
+const DIALOGS = {
+ dl1:{title:'How was your day?',ctx:'Evening. She just got home.',turns:[
+  {her:'h4'},
+  {me:['e5','e6']},
+  {her:[{'?m':'אַתָּה עָיֵף?','?f':'אַתְּ עֲיֵפָה?'},{'?m':'ata ayef?','?f':'at ayefa?'},'Are you tired?']},
+  {me:['d6']},
+  {her:'h6'},
+  {me:['e12','d5']},
+  {her:[{'?m':'בּוֹא, יֵשׁ אֹכֶל','?f':'בּוֹאִי, יֵשׁ אֹכֶל'},{'?m':'bo, yesh okhel','?f':'boi, yesh okhel'},'Come, there\'s food']},
+  {me:['g8','d9']},
+ ]},
+ dl2:{title:'Running late',ctx:'She calls. You\'re not there yet.',turns:[
+  {her:'d2'},
+  {me:['p7','d3']},
+  {her:['עוֹד כַּמָּה זְמַן?','od kama zman?','How much longer?']},
+  {me:['d4']},
+  {her:'h8'},
+  {me:['p8']},
+ ]},
+ dl3:{title:'Weekend plans',ctx:'Planning Saturday together.',turns:[
+  {her:['מָה עוֹשִׂים בְּשַׁבָּת?','ma osim beshabbat?','What are we doing on Saturday?']},
+  {me:['p12']},
+  {her:['רַעְיוֹן טוֹב!','ra\'ayon tov!','Good idea!']},
+  {me:['p4']},
+  {her:['בְּעֶשֶׂר?','be\'eser?','At ten?']},
+  {me:['p5']},
+ ]},
+ dl4:{title:'Making up',ctx:'You missed her calls today.',turns:[
+  {her:[{'?m':'לָמָּה לֹא עָנִיתָ לִי?','?f':'לָמָּה לֹא עָנִית לִי?'},{'?m':'lama lo anita li?','?f':'lama lo anit li?'},'Why didn\'t you answer me?']},
+  {me:['e1','e2']},
+  {her:'e4'},
+  {me:['e5']},
+  {her:['זֶה בְּסֵדֶר, מוֹתֶק','ze beseder, motek','It\'s okay, sweetie']},
+  {me:['s4','s1']},
+  {her:['גַּם אֲנִי','gam ani','Me too']},
+ ]},
 };
 const ITEMS = {...Object.fromEntries(Object.values(GLYPHS).map(g=>[g.id,g]))};
 const PH_UNIT = {};
@@ -409,19 +491,24 @@ const UNITS = [
  {id:'x2',track:'ab',test:true,glyph:'מִבְחָן',title:'All letters test'},
  {id:'ab7',track:'ab',glyph:'מָ',title:'Vowels: a, e, i',items:L('kamatz patach tsere segol hiriq')},
  {id:'ab8',track:'ab',glyph:'מוּ',title:'Vowels: o, u, shva',items:L('holam shuruk kubutz shva')},
- {id:'ab9',track:'ab',glyph:'קְרָא',title:'Reading mix',items:Object.keys(GLYPHS).map(k=>'L:'+k),mix:true},
+ {id:'ab9',track:'ab',glyph:'קְרִיאָה',title:'Reading mix',items:Object.keys(GLYPHS).map(k=>'L:'+k),mix:true},
  {id:'x3',track:'ab',test:true,glyph:'מִבְחָן',title:'Alef-Bet final exam'},
  {id:'t1',track:'talk',glyph:'שָׁלוֹם',title:'Greetings',items:P('greet')},
  {id:'t2',track:'talk',glyph:'כֵּן',title:'Yes, no and "say again?"',items:P('basics')},
- {id:'t3',track:'talk',glyph:'יַאללָה',title:'Everyday life',items:P('daily')},
+ {id:'t3',track:'talk',glyph:'יַאלְלָה',title:'Everyday life',items:P('daily')},
  {id:'x4',track:'talk',test:true,glyph:'מִבְחָן',title:'Checkpoint test'},
  {id:'t4',track:'talk',glyph:'מוֹתֶק',title:'Sweet talk',items:P('sweet')},
  {id:'t5',track:'talk',glyph:'נוּ?',title:'What you\'ll hear',items:P('hear')},
  {id:'t6',track:'talk',glyph:'לְחַיִּים',title:'Family dinner',items:P('family')},
-
-{id:'x5',track:'talk',test:true,glyph:'מִבְחָן',title:'Talk final exam'}];
+ {id:'t7',track:'talk',glyph:'מָתַי?',title:'Making plans',items:P('plans')},
+ {id:'c1',track:'talk',convo:'dl2',glyph:'שִׂיחָה',title:'Talk: Running late',items:['P:p7','P:d3','P:d4','P:p8']},
+ {id:'c3',track:'talk',convo:'dl3',glyph:'שִׂיחָה',title:'Talk: Weekend plans',items:['P:p12','P:p4','P:p5']},
+ {id:'t8',track:'talk',glyph:'סְלִיחָה',title:'Feelings and sorry',items:P('feel')},
+ {id:'c2',track:'talk',convo:'dl1',glyph:'שִׂיחָה',title:'Talk: How was your day?',items:['P:e5','P:e6','P:d6','P:e12','P:d5','P:g8','P:d9']},
+ {id:'c4',track:'talk',convo:'dl4',glyph:'שִׂיחָה',title:'Talk: Making up',items:['P:e1','P:e2','P:e5','P:s4','P:s1']},
+ {id:'x5',track:'talk',test:true,glyph:'מִבְחָן',title:'Talk final exam'}];
 UNITS.forEach((u,i)=>{ if(u.test) u.items=[...new Set(UNITS.slice(0,i).filter(x=>x.track===u.track&&!x.test&&!x.mix).flatMap(x=>x.items))]; });
-const CAT_TITLE = {greet:'Greetings',basics:'Yes, no and "say again?"',daily:'Everyday life',sweet:'Sweet talk',hear:'What you\'ll hear',family:'Family dinner'};
+const CAT_TITLE = {greet:'Greetings',basics:'Yes, no and "say again?"',daily:'Everyday life',sweet:'Sweet talk',hear:'What you\'ll hear',family:'Family dinner',plans:'Making plans',feel:'Feelings and sorry'};
 const BADGES = [
  {id:'first',g:'א',t:'First lesson',d:'Finish any lesson'},
  {id:'letters',g:'ת',t:'Alef to Tav',d:'Learn all 22 letters'},
@@ -434,9 +521,12 @@ const BADGES = [
  {id:'rush',g:'כ',t:'Speed reader',d:'Score 20 in Letter Rush'},
  {id:'passed',g:'י',t:'Test passed',d:'Score 80% or more on a test'},
  {id:'xp500',g:'תק',t:'500 XP',d:'Earn 500 XP'},
+ {id:'convo',g:'ב',t:'First conversation',d:'Finish a conversation'},
+ {id:'talker',g:'כה',t:'Talker',d:'Say 25 different phrases out loud'},
 ];
 const BADGE_TEST = {
- first:s=>Object.values(s.lessons).some(n=>n>0),
+ first:s=>Object.entries(s.lessons).some(([k,n])=>n>0&&!/^x/.test(k)),
+ convo:s=>!!s.flags.convo, talker:s=>Object.keys(s.spoken||{}).length>=25,
  letters:s=>['ab1','ab2','ab3','ab4','ab5'].every(u=>s.lessons[u]),
  finals:s=>!!s.lessons.ab6, vowels:s=>s.lessons.ab7&&s.lessons.ab8,
  sweet:s=>!!s.lessons.t4, perfect:s=>!!s.flags.perfect,
@@ -446,10 +536,43 @@ const DAILY_GOAL = 50;
 
 /* ---------- state ---------- */
 const KEY='daber-v1';
-const fresh = ()=>({v:1,xp:0,lessons:{},stats:{},days:{},streak:0,bestStreak:0,lastDay:null,rushBest:0,badges:{},stars:{},flags:{},tests:[],testBest:{},lastTest:0,
-  set:{me:null,them:'f',niq:true,tr:true,rate:0.85},updated:0});
+const fresh = ()=>({v:1,xp:0,lessons:{},stats:{},days:{},streak:0,bestStreak:0,lastDay:null,rushBest:0,badges:{},stars:{},flags:{},tests:[],testBest:{},lastTest:0,spoken:{},convos:{},
+  set:{me:null,them:'f',niq:true,tr:true,rate:0.85,asr:'auto'},updated:0});
+const isObj=v=>v&&typeof v==='object'&&!Array.isArray(v);
+// Rebuild a saved state on top of fresh(), dropping any field with the wrong shape so a bad import can't break the app.
+function sanitize(o){
+  const f=fresh(), out={...f};
+  if(!isObj(o)) return out;
+  for(const k of Object.keys(f)){
+    const v=o[k];
+    if(v===undefined) continue;
+    if(isObj(f[k])) { if(isObj(v)) out[k]=v; }
+    else if(Array.isArray(f[k])) { if(Array.isArray(v)) out[k]=v; }
+    else if(typeof f[k]==='number') { if(typeof v==='number'&&isFinite(v)) out[k]=v; }
+    else out[k]=v;
+  }
+  out.set={...f.set,...(isObj(o.set)?o.set:{})};
+  return out;
+}
 let S = fresh();
-try{ const raw=localStorage.getItem(KEY); if(raw){ const o=JSON.parse(raw); S={...fresh(),...o,set:{...fresh().set,...(o.set||{})}}; } }catch(e){}
+try{ const raw=localStorage.getItem(KEY); if(raw){ try{ S=sanitize(JSON.parse(raw)); }catch(e){ try{ localStorage.setItem(KEY+'-backup-'+Date.now(),raw); }catch(_){} setTimeout(()=>toast('Your saved progress could not be read. A backup copy was kept.'),800); } } }catch(e){}
+// Combine two progress states field by field, so syncing never throws away work done on either device.
+function mergeState(a,b){
+  a=sanitize(a); b=sanitize(b);
+  const newer=(b.updated||0)>(a.updated||0)?b:a, older=newer===a?b:a;
+  const maxMap=(x,y)=>{const o={...x}; for(const k in y) o[k]=Math.max(+o[k]||0,+y[k]||0); return o;};
+  const m={...newer};
+  m.xp=Math.max(a.xp,b.xp); m.bestStreak=Math.max(a.bestStreak,b.bestStreak); m.rushBest=Math.max(a.rushBest,b.rushBest);
+  m.lessons=maxMap(a.lessons,b.lessons); m.testBest=maxMap(a.testBest,b.testBest); m.days=maxMap(a.days,b.days); m.spoken=maxMap(a.spoken,b.spoken); m.convos=maxMap(a.convos,b.convos);
+  m.badges={...older.badges,...newer.badges}; m.flags={...older.flags,...newer.flags}; m.stars={...older.stars,...newer.stars};
+  m.stats={...older.stats}; for(const k in newer.stats){ const x=m.stats[k], y=newer.stats[k]; m.stats[k]=!x||(y.last||0)>=(x.last||0)?y:x; }
+  const seenT=new Set(); m.tests=[...a.tests,...b.tests].filter(t=>{const k=JSON.stringify(t); if(seenT.has(k)) return false; seenT.add(k); return true;}).slice(-50);
+  m.lastTest=Math.max(a.lastTest||0,b.lastTest||0);
+  if(a.lastDay&&b.lastDay&&a.lastDay!==b.lastDay){ const late=a.lastDay>b.lastDay?a:b; m.lastDay=late.lastDay; m.streak=late.streak; }
+  m.set={...older.set,...newer.set};
+  m.updated=Math.max(a.updated||0,b.updated||0);
+  return m;
+}
 let cloudRef=null, cloudTimer=null, cloudBusy=false;
 function save(){
   S.updated=Date.now();
@@ -477,11 +600,10 @@ async function initCloud(){
       const r=snap.data()||{};
       try{
         const remote=JSON.parse(r.state||'{}');
-        if((remote.updated||0)>(S.updated||0) && (remote.xp||0)>=(S.xp||0)){
-          S={...fresh(),...remote,set:{...fresh().set,...(remote.set||{})}};
+        if(remote.updated){
+          S=mergeState(S,remote);
           try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){}
-          render();
-          return;
+          if(!LS&&!FC) render();
         }
       }catch(e){}
     }
@@ -516,13 +638,15 @@ function toast(msg){ const t=$('#toast'); t.textContent=msg; t.hidden=false; cle
 let heVoices=[];
 function loadVoices(){ try{ heVoices=speechSynthesis.getVoices().filter(v=>/^(he|iw)/i.test(v.lang)); }catch(e){} }
 try{ loadVoices(); speechSynthesis.onvoiceschanged=loadVoices; }catch(e){}
-function say(text,slow){
+function say(text,slow,pitch){
   try{
+    // Never play audio into a live microphone: it mutes the mic on iPhone.
+    if(typeof stopListening==='function'){ stopListening(); stopRecording(); }
     if(!('speechSynthesis' in window)) throw 0;
     speechSynthesis.cancel();
     const u=new SpeechSynthesisUtterance(text);
     u.lang='he-IL'; if(heVoices[0]) u.voice=heVoices[0];
-    u.rate=slow?0.55:S.set.rate;
+    u.rate=slow?0.55:S.set.rate; if(pitch) u.pitch=pitch;
     speechSynthesis.speak(u);
     if(!heVoices.length && !say.warned){ say.warned=true; setTimeout(()=>{ loadVoices(); if(!heVoices.length) toast('No Hebrew voice found on this device. See Me › Sound to add one.'); },600); }
   }catch(e){ toast('Audio isn\'t available in this browser.'); }
@@ -559,13 +683,16 @@ function render(){
 }
 document.getElementById('nav').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;tab=b.dataset.tab;render();$('#main').scrollTop=0;});
 
-function prevUnit(u){ const list=UNITS.filter(x=>x.track===u.track); return list.slice(0,list.indexOf(u)).reverse().find(x=>!x.test); }
-function unitUnlocked(u){ const p=prevUnit(u); return !p||!!S.lessons[p.id]; }
+function prevUnit(u){ const list=UNITS.filter(x=>x.track===u.track); return list[list.indexOf(u)-1]; }
+const testPassed=id=>((S.testBest||{})[id]||0)>=80;
+function unitDone(u){ return u.test?testPassed(u.id):!!S.lessons[u.id]; }
+// Each node opens once the one before it is done. A checkpoint test counts as done only when passed (80%).
+function unitUnlocked(u){ if(S.lessons[u.id]) return true; const p=prevUnit(u); return !p||unitDone(p); }
 function testDue(){ return seenItems().length>=15 && (!S.lastTest || Date.now()-S.lastTest>=3*864e5); }
 function viewLearn(){
   const lv=levelOf(S.xp), a=xpFor(lv), b=xpFor(lv+1);
   const list=UNITS.filter(u=>u.track===track);
-  const nextU=list.find(u=>!S.lessons[u.id]&&unitUnlocked(u));
+  const nextU=list.find(u=>!unitDone(u)&&unitUnlocked(u));
   const off=[0,46,66,46,0,-46,-66,-46];
   return `
   <div class="levelcard">
@@ -578,11 +705,12 @@ function viewLearn(){
     <button data-track="ab" aria-pressed="${track==='ab'}">Alef-Bet</button>
     <button data-track="talk" aria-pressed="${track==='talk'}">Talk</button>
   </div>
-  <p class="muted" style="margin:6px 2px 0;font-size:14px">${track==='ab'?'Relearn every letter and vowel sign, then read real words.':'Phrases for everyday life together. Gender forms follow your settings.'}</p>
+  <p class="muted" style="margin:6px 2px 0;font-size:14px">${track==='ab'?'Relearn every letter and vowel sign, then read real words.':'Phrases and short conversations for everyday life together. Gender forms follow your settings.'}</p>
+  ${track==='talk'?dailyCard():''}
   <div class="path">
   ${list.map((u,i)=>{
     const n=S.lessons[u.id]||0, open=unitUnlocked(u), best=(S.testBest||{})[u.id];
-    const isDone=u.test?best>=80:n>0;
+    const isDone=unitDone(u);
     const cls=(u.test?'test ':'')+(isDone?'done':(u===nextU?'next':(open?'':'locked')));
     const long=[...strip(u.glyph)].length>2;
     return `<div class="node ${cls}" style="transform:translateX(${off[i%off.length]}px)">
@@ -596,17 +724,38 @@ function viewLearn(){
   </div>`;
 }
 function seenItems(){ return Object.keys(S.stats).filter(k=>ITEMS[k]); }
+function hashStr(t){ let h=0; for(const c of t) h=(h*31+c.charCodeAt(0))|0; return Math.abs(h); }
+function dailyPick(){
+  let list=seenItems().filter(k=>ITEMS[k].kind==='phrase'&&!ITEMS[k].partner);
+  if(list.length<3) list=P('greet').concat(P('sweet'));
+  const fri=new Date().getDay()===5, fam=list.filter(k=>PH_UNIT[k]==='family');
+  if(fri&&fam.length) list=fam;
+  return ITEMS[list[hashStr(dayKey())%list.length]];
+}
+function dailyCard(){
+  const it=dailyPick(), did=S.flags.said===dayKey(), who=S.set.them==='m'?'him':'her';
+  return `<div class="banner daily" style="margin:14px 0 22px;background:var(--surface);border-color:var(--sea)">
+    <div><div class="eyebrow">Say this to ${who} today</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px">
+        <div><div style="font-size:26px;font-weight:700;line-height:1.3">${heSpan(heOf(it))}</div><div style="font-size:14px">${S.set.tr?`<i class="muted">${esc(trOf(it))}</i> · `:''}${esc(it.en)}</div></div>
+        <button class="iconbtn" data-say="${it.id}" aria-label="Play">${ICON.play}</button>
+      </div></div>
+    ${did?`<span class="muted">יוֹפִי! You did it today. New phrase tomorrow.</span>`:`<button class="btn sea" data-act="said">I said it to ${who} (+5 XP)</button>`}
+  </div>`;
+}
 function viewPractice(){
   const seen=seenItems().length;
   return `<div class="stack">
     <div><div class="eyebrow">Practice</div><h2>Keep it fresh</h2></div>
-    <button class="card practice-item" data-act="review"><span class="ic he" lang="he">חזר</span><div><b>Smart review</b><span>${seen>=4?`Your ${Math.min(12,seen)} shakiest items, mixed together.`:'Unlocks after your first lesson.'}</span></div></button>
+    <button class="card practice-item" data-act="review"><span class="ic he sm" lang="he">חֲזָרָה</span><div><b>Smart review</b><span>${seen>=4?`Your ${Math.min(12,seen)} shakiest items, mixed together.`:'Unlocks after your first lesson.'}</span></div></button>
     <button class="card practice-item" data-act="rush"><span class="ic he" lang="he">אבג</span><div><b>Letter Rush</b><span>60 seconds. Name the sound as fast as you can. Best: ${S.rushBest}</span></div></button>
     <button class="card practice-item" data-act="listen"><span class="ic he sm" lang="he">אֹזֶן</span><div><b>Ear training</b><span>Hear a phrase, pick what it means. Gets you ready for the other side of the conversation.</span></div></button>
-    <button class="card practice-item" data-act="speak"><span class="ic he" lang="he">דַּבֵּר</span><div><b>Repeat after me</b><span>Hear a phrase, record yourself saying it, and get a score.</span></div></button>
+    <button class="card practice-item" data-act="convos"><span class="ic he sm" lang="he">שִׂיחָה</span><div><b>Conversations</b><span>${S.set.them==='m'?'He':'She'} says a line, you answer out loud. Short real-life chats.</span></div></button>
+    <button class="card practice-item" data-act="speak"><span class="ic he" lang="he">דַּבֵּר</span><div><b>Repeat after me</b><span>Hear a phrase, say it back, and see which words came through.</span></div></button>
+    <button class="card practice-item" data-act="recall"><span class="ic he sm" lang="he">זִכָּרוֹן</span><div><b>Say it from memory</b><span>${seen>=4?'See the English, say it in Hebrew. No peeking unless you need a hint.':'Unlocks after your first Talk lesson.'}</span></div></button>
     <button class="card practice-item" data-act="cards"><span class="ic he sm" lang="he">כַּרְטִיס</span><div><b>Flashcards</b><span>Flip through letters and phrases at your own pace, back and forward.</span></div></button>
     <button class="card practice-item" data-act="exam"><span class="ic he sm" lang="he">מִבְחָן</span><div><b>Progress test</b><span>${seen>=15?`20 questions, no hints. ${S.tests.length?'Last score: '+S.tests[S.tests.length-1].score+'%.':'See where you stand.'}`:`Unlocks after you learn 15 items. You have ${seen}.`}</span></div></button>
-    <div class="tip"><b>Tip:</b> Try one phrase on her today. Real conversation sticks better than any quiz.</div>
+    <div class="tip"><b>Tip:</b> Try one phrase on ${S.set.them==='m'?'him':'her'} today. Real conversation sticks better than any quiz.</div>
   </div>`;
 }
 function viewPhrases(){
@@ -648,6 +797,10 @@ function viewMe(){
       <div class="stat"><b>${currentStreak()}</b><span>Day streak</span></div>
       <div class="stat"><b>${learned}</b><span>Items learned</span></div>
     </div>
+    <div class="stats" style="grid-template-columns:1fr 1fr">
+      <div class="stat"><b>${Object.keys(S.spoken||{}).length}</b><span>Phrases said out loud</span></div>
+      <div class="stat"><b>${Object.keys(DIALOGS).filter(k=>(S.convos||{})[k]).length}/${Object.keys(DIALOGS).length}</b><span>Conversations done</span></div>
+    </div>
     <div class="card"><div class="eyebrow" style="margin-bottom:10px">Last 7 days</div>
       <div class="week">${days.map(d=>{const v=S.days[dayKey(d)]||0;return `<div class="d ${v?'':'zero'}"><i style="height:${Math.max(3,v/max*46)}px"></i>${'SMTWTFS'[d.getDay()]}</div>`}).join('')}</div>
     </div>
@@ -665,6 +818,7 @@ function viewMe(){
     <div class="card"><div class="eyebrow">Sound</div>
       <p style="margin:8px 0">${heVoices.length?`Using the voice <b>${esc(heVoices[0].name)}</b>.`:'No Hebrew voice was found yet. On iPhone, go to Settings › Accessibility › Spoken Content › Voices › Hebrew and download one. On Android, install Hebrew in Google Text-to-speech.'}</p>
       <button class="btn ghost" data-act="testvoice">Test: שָׁלוֹם</button>
+      <div class="setting" style="margin-top:8px"><span>Speech scoring<br><small class="muted">${iosStandalone?'Not available in the iPhone home-screen app. Open Daber in a Safari tab with Siri on to get scored. You can always record and compare here.':'Uses your phone\'s speech recognition (on iPhone, Siri must be on). Off means record yourself and compare.'}</small></span><div class="pick"><button data-asr="auto" aria-pressed="${S.set.asr!=='off'}">Auto</button><button data-asr="off" aria-pressed="${S.set.asr==='off'}">Off</button></div></div>
     </div>
     <div class="card"><div class="eyebrow">Add to your phone</div>
       <p style="margin:8px 0 0">iPhone: open this page in Safari, tap Share, then <b>Add to Home Screen</b>. Android: open the browser menu and tap <b>Add to Home screen</b>.</p>
@@ -704,7 +858,7 @@ function bindView(){
   m.querySelectorAll('[data-track]').forEach(b=>b.onclick=()=>{track=b.dataset.track;render();});
   m.querySelectorAll('[data-unit]').forEach(b=>b.onclick=()=>{
     const u=UNITS.find(x=>x.id===b.dataset.unit);
-    if(!unitUnlocked(u)){ const list=UNITS.filter(x=>x.track===u.track); toast('Finish "'+prevUnit(u).title+'" to unlock this.'); return; }
+    if(!unitUnlocked(u)){ const p=prevUnit(u); toast(p.test?'Pass "'+p.title+'" (80%) to unlock this.':'Finish "'+p.title+'" to unlock this.'); return; }
     startLesson({unit:u});
   });
   m.querySelectorAll('[data-say]').forEach(b=>b.onclick=()=>sayItem(ITEMS[b.dataset.say],b.hasAttribute('data-slow')));
@@ -716,6 +870,7 @@ function bindView(){
   m.querySelectorAll('[data-them]').forEach(b=>b.onclick=()=>{S.set.them=b.dataset.them;save();render();});
   m.querySelectorAll('[data-niq]').forEach(b=>b.onclick=()=>{S.set.niq=b.dataset.niq==='1';save();render();});
   m.querySelectorAll('[data-tr]').forEach(b=>b.onclick=()=>{S.set.tr=b.dataset.tr==='1';save();render();});
+  m.querySelectorAll('[data-asr]').forEach(b=>b.onclick=()=>{S.set.asr=b.dataset.asr;asrSession.off=false;asrSession.misses=0;save();render();});
   m.querySelectorAll('[data-rate]').forEach(b=>b.onclick=()=>{S.set.rate=+b.dataset.rate;save();render();say('שָׁלוֹם, מָה נִשְׁמָע?');});
   m.querySelectorAll('[data-act]').forEach(b=>b.onclick=()=>practiceAct(b.dataset.act));
 }
@@ -735,8 +890,8 @@ function practiceAct(a){
       try{
         const raw=$('#codeIn').value.trim().replace(/^DABER1:/,'');
         const o=JSON.parse(decodeURIComponent(escape(atob(raw))));
-        if(typeof o.xp!=='number') throw 0;
-        S={...fresh(),...o,set:{...fresh().set,...(o.set||{})},updated:Date.now()};
+        if(!isObj(o)||typeof o.xp!=='number') throw 0;
+        S={...sanitize(o),updated:Date.now()};
         save(); toast('Progress loaded: '+S.xp+' XP.'); render();
       }catch(e){ toast('That code didn\'t work. Copy the whole thing, starting with DABER1:'); }
     };
@@ -751,7 +906,10 @@ function practiceAct(a){
   if(a==='review'){ if(seen.length<4){toast('Finish a lesson first.');return;} startLesson({review:true}); return; }
   if(a==='rush'){ startRush(); return; }
   if(a==='listen'){ const ph=seen.filter(k=>ITEMS[k].kind==='phrase'); startLesson({drill:'hearP',pool:ph.length>=4?ph:P('greet').concat(P('sweet')),title:'Ear training'}); return; }
-  if(a==='speak'){ const ph=seen.filter(k=>ITEMS[k].kind==='phrase'); startLesson({drill:'say',pool:ph.length>=4?ph:P('greet').concat(P('sweet')),title:'Repeat after me'}); return; }
+  if(a==='speak'){ const ph=seen.filter(k=>ITEMS[k].kind==='phrase'&&!ITEMS[k].partner); startLesson({drill:'say',pool:ph.length>=4?ph:P('greet').concat(P('sweet')),title:'Repeat after me'}); return; }
+  if(a==='recall'){ const ph=seen.filter(k=>ITEMS[k].kind==='phrase'&&!ITEMS[k].partner); if(ph.length<4){toast('Finish a Talk lesson first.');return;} startLesson({drill:'sayEn',pool:ph,title:'Say it from memory'}); return; }
+  if(a==='convos'){ openConvos(); return; }
+  if(a==='said'){ if(S.flags.said!==dayKey()){ S.flags.said=dayKey(); addXP(5); checkBadges(); save(); toast('יוֹפִי! +5 XP'); } render(); return; }
   if(a==='cards'){ openDecks(); return; }
   if(a==='exam'){ if(seen.length<15){toast('Learn 15 items first. You have '+seen.length+'.');return;} startLesson({exam:true}); return; }
 }
@@ -775,15 +933,17 @@ function makeQ(item, type, pool){
   }
   const sameKind=pool.filter(k=>ITEMS[k].kind==='phrase');
   if(type==='p2e'){ const d=distract(item,sameKind,3,it=>it.en); return {type,item,title:'What does this mean?',mid:heOf(item),tr:true,list:true,opts:shuffle([item,...d]).map(it=>({label:it.en,ok:it===item})),answer:item.en}; }
-  if(type==='e2p'){ const d=distract(item,sameKind,3,it=>it.en); return {type,item,title:`How do you say “${item.en}”?`,list:true,opts:shuffle([item,...d]).map(it=>({he:heOf(it),ok:it===item})),answer:heOf(item)}; }
+  if(type==='e2p'){ const d=distract(item,sameKind,3,it=>it.en); return {type,item,title:/\?$/.test(item.en)?`How do you ask “${item.en}”`:`How do you say “${item.en}”?`,list:true,opts:shuffle([item,...d]).map(it=>({he:heOf(it),ok:it===item})),answer:heOf(item)}; }
   if(type==='hearP'){ const d=distract(item,sameKind,3,it=>it.en); return {type,item,title:'What did you hear?',audio:true,list:true,opts:shuffle([item,...d]).map(it=>({label:it.en,ok:it===item})),answer:item.en}; }
   if(type==='build'){
-    const words=heOf(item).split(' ');
-    const extra=distract(item,sameKind,4,it=>it.en).flatMap(it=>heOf(it).split(' ')).filter(w=>!words.includes(w));
-    const bank=shuffle([...words,...pickN([...new Set(extra)],Math.min(3,Math.max(1,5-words.length)))]);
-    return {type,item,title:`Build: “${item.en}”`,bank,target:words.join(' '),answer:heOf(item)};
+    const words=heOf(item).split(' ').map(tileWord), keys=new Set(words.map(tileKey));
+    const extra=[], ek=new Set();
+    for(const w of distract(item,sameKind,4,it=>it.en).flatMap(it=>heOf(it).split(' ')).map(tileWord)){ const k=tileKey(w); if(!k||keys.has(k)||ek.has(k)) continue; ek.add(k); extra.push(w); }
+    const bank=shuffle([...words,...pickN(extra,Math.min(3,Math.max(1,5-words.length)))]);
+    return {type,item,title:`Build: “${item.en}”`,bank,target:words.map(tileKey).join(' '),answer:heOf(item)};
   }
   if(type==='speak') return {type,item,title:'Say it out loud',mid:heOf(item),tr:true,answer:heOf(item)};
+  if(type==='sayEn') return {type,item,recall:true,title:'Say it in Hebrew',say:heOf(item),targets:[heOf(item)],answer:heOf(item)};
   if(type==='say') return item.kind==='glyph'
     ? {type,item,title:'Repeat after me',say:item.name,targets:[item.name,item.ch,item.w],answer:item.name}
     : {type,item,title:'Repeat after me',say:heOf(item),targets:[heOf(item)],answer:heOf(item)};
@@ -793,11 +953,17 @@ function typesFor(item, mode){
     if(mode==='mix') return ['read','read','g2s','name'];
     return item.vowel?['g2s','s2g','read','name']:['g2s','s2g','hear','name','read','say'];
   }
+  // Lines you'll hear from your partner are for understanding only, so you never practice saying them in their voice.
+  if(item.partner) return ['p2e','hearP','hearP','p2e'];
   const n=heOf(item).split(' ').length;
   const t=['p2e','e2p','hearP','say'];
   if(n>=2&&n<=6) t.push('build','build');
+  if((S.stats[item.id]||{}).c>=2) t.push('sayEn','sayEn');
   return t;
 }
+const SPEAK_TYPES=['say','sayEn','speak'];
+const tileWord=w=>w.replace(/[?,!.]/g,'');
+const tileKey=w=>strip(tileWord(w));
 function buildQuestions(items, n, mode, pool){
   const qs=[]; let order=[];
   while(order.length<n) order=order.concat(shuffle(items));
@@ -805,7 +971,8 @@ function buildQuestions(items, n, mode, pool){
   const lastType={};
   for(const id of order){
     const it=ITEMS[id];
-    let types=typesFor(it,mode).filter(t=>t!==lastType[id]&&(mode!=='test'||(t!=='say'&&t!=='speak')));
+    let types=typesFor(it,mode).filter(t=>t!==lastType[id]&&(mode!=='test'||!SPEAK_TYPES.includes(t)));
+    if(!types.length) types=typesFor(it,mode).filter(t=>mode!=='test'||!SPEAK_TYPES.includes(t));
     const t=types[Math.random()*types.length|0]; lastType[id]=t;
     qs.push(makeQ(it,t,pool));
   }
@@ -815,6 +982,7 @@ function buildQuestions(items, n, mode, pool){
 /* ---------- lesson engine ---------- */
 let LS=null;
 function startLesson(opt){
+  if(opt.unit&&opt.unit.convo){ startConvo(opt.unit.convo,opt.unit); return; }
   let items, qs, intro=[], title, pool;
   if(opt.unit&&opt.unit.test){
     title=opt.unit.title; items=opt.unit.items; pool=items;
@@ -831,21 +999,23 @@ function startLesson(opt){
   } else if(opt.review){
     title='Smart review';
     const seen=seenItems();
-    const score=id=>{const s=S.stats[id];return (s.c||0)-2*(s.w||0)+Math.random()*1.5;};
+    // Shakiest first; phrases never said out loud get a nudge up the list.
+    const score=id=>{const s=S.stats[id];return (s.c||0)-2*(s.w||0)-(ITEMS[id].kind==='phrase'&&!ITEMS[id].partner&&!(S.spoken||{})[id]?1:0)+Math.random()*1.5;};
     items=seen.sort((a,b)=>score(a)-score(b)).slice(0,8); pool=seen;
     qs=buildQuestions(items,12,null,pool);
   } else {
     title=opt.title; pool=opt.pool; items=pickN(pool,10);
     qs=items.map(id=>makeQ(ITEMS[id],opt.drill,pool));
   }
-  LS={opt,title,unit:opt.unit,test:!!(opt.exam||(opt.unit&&opt.unit.test)),qs,intro,introI:0,i:0,total:qs.length,correct:0,wrong:0,combo:0,best:0,xp:0,firstTry:new Set(),missed:new Set()};
+  LS={opt,title,unit:opt.unit,test:!!(opt.exam||(opt.unit&&opt.unit.test)),qs,intro,introI:0,i:0,total:qs.length,correct:0,wrong:0,skipped:0,combo:0,best:0,xp:0,answeredAt:-1,missed:new Set()};
   $('#sheet').hidden=false;
   if(intro.length) renderIntro(); else renderQ();
 }
 function lessonBar(progress){
-  return `<div class="lbar"><button class="x" id="quit" aria-label="Quit">${ICON.x}</button><div class="bar"><i style="width:${Math.round(progress*100)}%"></i></div><div class="combo">${LS.combo>=3?'×'+LS.combo:''}</div></div>`;
+  return `<div class="lbar"><button class="x" id="quit" aria-label="Quit">${ICON.x}</button><div class="bar"><i style="width:${Math.round(progress*100)}%"></i></div><div class="combo">${LS&&LS.combo>=3?'×'+LS.combo:''}</div></div>`;
 }
-function bindQuit(){ $('#quit').onclick=()=>{ try{recActive&&recActive.stop();}catch(e){} try{recMedia&&recMedia.state==='recording'&&recMedia.stop();}catch(e){} stopRecStream(); window.speechSynthesis?.cancel?.(); clearInterval(RUSH?.timer); RUSH=null; LS=null; $('#sheet').hidden=true; render(); }; }
+function stopAllAudio(){ stopListening(); stopRecording(); clearTimeout(autoSayT); try{ window.speechSynthesis?.cancel?.(); }catch(e){} }
+function bindQuit(){ $('#quit').onclick=()=>{ stopAllAudio(); stopRecStream(); QTOK=null; clearInterval(RUSH?.timer); RUSH=null; LS=null; CV=null; $('#sheet').hidden=true; render(); }; }
 function renderIntro(){
   const it=ITEMS[LS.intro[LS.introI]];
   const el=$('#sheetIn');
@@ -873,10 +1043,11 @@ function renderIntro(){
       </div></div>
       ${introNav()}`;
     $('#p1').onclick=()=>say(he); $('#p2').onclick=()=>say(he,true);
-    setTimeout(()=>say(he),250);
+    clearTimeout(autoSayT); autoSayT=setTimeout(()=>say(he),250);
   }
   bindQuit();
-  $('#next').onclick=()=>{ S.stats[it.id]=S.stats[it.id]||{c:0,w:0}; LS.introI++; if(LS.introI<LS.intro.length) renderIntro(); else renderQ(); };
+  // Intro cards count as "learned" only once the lesson is finished (see finishLesson).
+  $('#next').onclick=()=>{ LS.introI++; if(LS.introI<LS.intro.length) renderIntro(); else renderQ(); };
   $('#prev').onclick=()=>{ if(LS.introI>0){ LS.introI--; renderIntro(); } };
   swipe($('.qbody'),()=>$('#next').click(),()=>$('#prev').click());
 }
@@ -889,40 +1060,56 @@ function swipe(el,onNext,onPrev){
   el.addEventListener('touchend',e=>{ if(x0==null) return; const dx=e.changedTouches[0].clientX-x0, dy=e.changedTouches[0].clientY-y0; x0=null;
     if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5){ dx<0?onNext():onPrev(); } },{passive:true});
 }
+const playRow=()=>`<div class="playrow"><button class="bigplay" id="qplay" aria-label="Play">${ICON.play}</button><button class="bigplay" id="qslow" style="background:var(--soft);color:var(--ink);box-shadow:0 5px 0 var(--line)" aria-label="Play slowly">${ICON.slow}</button></div>`;
+function nextQ(){ stopAllAudio(); LS.i++; if(LS.i<LS.qs.length) renderQ(); else finishLesson(); }
 function renderQ(){
+  stopAllAudio();
   const q=LS.qs[LS.i]; const el=$('#sheetIn');
+  QTOK={q}; q.hinted=false;
   let body=`<div class="qtitle">${esc(q.title)}</div>`;
   if(q.big) body+=`<div class="glyph" lang="he">${esc(q.big)}</div>`;
   if(q.mid) body+=`<div class="prompt"><div class="glyph mid" lang="he">${esc(show(q.mid))}</div>${q.tr&&S.set.tr?`<span class="tr">${esc(trOf(q.item))}</span>`:''}</div>`;
-  if(q.audio) body+=`<div class="playrow"><button class="bigplay" id="qplay" aria-label="Play">${ICON.play}</button><button class="bigplay" id="qslow" style="background:var(--soft);color:var(--ink);box-shadow:0 5px 0 var(--line)" aria-label="Play slowly">${ICON.slow}</button></div>`;
+  if(q.audio) body+=playRow();
   let foot='';
   if(q.opts){
     body+=`<div class="opts ${q.list?'list':''}">${q.opts.map((o,i)=>`<button class="opt" data-o="${i}">${o.he?heSpan(o.he):esc(o.label)}</button>`).join('')}</div>`;
   } else if(q.type==='build'){
     body+=`<div class="tray" id="tray" aria-label="Your answer"></div><div class="bank" id="bank">${q.bank.map((w,i)=>`<button class="tile" data-t="${i}" lang="he">${esc(show(w))}</button>`).join('')}</div>`;
     foot=`<div class="feedback" id="fb"><button class="btn" id="check" disabled>Check</button></div>`;
-  } else if(q.type==='speak'){
-    body+=`<div class="playrow"><button class="bigplay" id="qplay" aria-label="Play">${ICON.play}</button><button class="bigplay" id="qslow" style="background:var(--soft);color:var(--ink);box-shadow:0 5px 0 var(--line)" aria-label="Play slowly">${ICON.slow}</button></div><p class="muted" style="text-align:center;margin:0">${esc(q.item.en)}. Say it aloud first, then play the audio and compare.</p>`;
-    foot=`<div class="feedback" id="fb"><div class="row"><button class="btn ghost" id="sp0">Still tricky</button><button class="btn sea" id="sp1">I nailed it</button></div></div>`;
-  } else if(q.type==='say'){
-    body+= q.item.kind==='glyph'
-      ? `<div class="glyph" lang="he">${esc(q.item.ch)}</div><div class="prompt"><b style="font-size:20px">Say “${esc(q.item.nm)}”</b>${heSpan(q.item.name)}</div>`
-      : `<div class="prompt"><div class="glyph mid" lang="he">${esc(show(q.say))}</div>${S.set.tr?`<span class="tr">${esc(trOf(q.item))}</span>`:''}<span class="muted">${esc(q.item.en)}</span></div>`;
-    body+=`<div class="playrow"><button class="bigplay" id="qplay" aria-label="Play">${ICON.play}</button><button class="bigplay" id="qslow" style="background:var(--soft);color:var(--ink);box-shadow:0 5px 0 var(--line)" aria-label="Play slowly">${ICON.slow}</button></div>
-      <div class="micwrap"><button class="mic" id="mic" aria-label="Record yourself">${ICON.mic}</button><div class="heard muted" id="heard">Listen, then tap the mic and say it.</div></div>`;
+  } else if(q.type==='say'||q.type==='sayEn'){
+    if(q.recall){
+      body+=`<div class="prompt"><b style="font-size:24px">“${esc(q.item.en)}”</b><span class="muted">Say it in Hebrew, from memory.</span></div>
+        <div id="reveal" class="prompt"><button class="btn ghost" id="hintB" style="width:auto">Show a hint</button></div>`;
+    } else {
+      body+= q.item.kind==='glyph'
+        ? `<div class="glyph" lang="he">${esc(q.item.ch)}</div><div class="prompt"><b style="font-size:20px">Say “${esc(q.item.nm)}”</b>${heSpan(q.item.name)}</div>`
+        : `<div class="prompt"><div class="glyph mid" lang="he">${esc(show(q.say))}</div>${S.set.tr?`<span class="tr">${esc(trOf(q.item))}</span>`:''}<span class="muted">${esc(q.item.en)}</span></div>`;
+      body+=playRow();
+    }
+    body+=`<div class="micwrap" id="micwrap"><button class="mic" id="mic" aria-label="Record yourself">${ICON.mic}</button><div class="heard muted" id="heard">${q.recall?'Tap the mic and say it.':'Listen, then tap the mic and say it.'}</div></div>`;
     foot=`<div class="feedback" id="fb"><button class="btn ghost" id="skipSay">Can't talk right now</button></div>`;
   }
   el.innerHTML=lessonBar(LS.i/LS.qs.length)+`<div class="qbody">${body}</div>`+(foot||'<div class="feedback" id="fb" hidden></div>');
   bindQuit();
   const sayText=q.say||(q.item.kind==='glyph'?(q.type==='hear'?q.item.name:q.item.w):heOf(q.item));
-  if($('#qplay')){ $('#qplay').onclick=()=>say(sayText); $('#qslow').onclick=()=>say(sayText,true); }
-  if(q.audio||q.type==='say') setTimeout(()=>say(sayText),250);
-  if(q.type==='say'){
-    $('#mic').onclick=()=>recordSay(q);
-    $('#skipSay').onclick=()=>{ LS.total=Math.max(1,LS.total-1); LS.i++; if(LS.i<LS.qs.length) renderQ(); else finishLesson(); };
-    if(micBroken||useRecorder||!SRec()) recorderUI(q);
+  bindPlay(sayText);
+  if(q.audio||q.type==='say'){ autoSayT=setTimeout(()=>say(sayText),250); }
+  if(q.type==='say'||q.type==='sayEn'){
+    if(q.recall) $('#hintB').onclick=()=>{ q.hinted=true; revealQ(q,true); };
+    $('#skipSay').onclick=()=>{ LS.total=Math.max(1,LS.total-1); LS.skipped++; nextQ(); };
+    setupSpeak(q, {
+      targets:q.targets,
+      onGraded:(res,first)=>{
+        if(q.recall) revealQ(q,true);
+        if(first){ const stars=q.hinted?Math.min(2,res.stars):res.stars; answer(stars>=2,true,{stars}); }
+      },
+      onSelf:ok=>answer(ok,true),
+      native:()=>say(q.say),
+      afterRecord:()=>{ if(q.recall) revealQ(q,false); },
+    });
   }
   if(q.opts) el.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{
+    if(LS.answeredAt===LS.i) return;
     const o=q.opts[+b.dataset.o];
     el.querySelectorAll('.opt').forEach((x,i)=>{x.disabled=true; if(q.opts[i].ok) x.classList.add('right');});
     if(!o.ok) b.classList.add('wrong');
@@ -932,44 +1119,57 @@ function renderQ(){
     const tray=$('#tray'), picked=[];
     const draw=()=>{ tray.innerHTML=picked.map((i,k)=>`<button class="tile" data-k="${k}" lang="he">${esc(show(q.bank[i]))}</button>`).join('');
       el.querySelectorAll('#bank .tile').forEach(t=>t.classList.toggle('used',picked.includes(+t.dataset.t)));
-      tray.querySelectorAll('.tile').forEach(t=>t.onclick=()=>{picked.splice(+t.dataset.k,1);draw();});
+      tray.querySelectorAll('.tile').forEach(t=>t.onclick=()=>{ if(LS.answeredAt===LS.i) return; picked.splice(+t.dataset.k,1);draw();});
       $('#check').disabled=!picked.length; };
-    el.querySelectorAll('#bank .tile').forEach(t=>t.onclick=()=>{ if(picked.includes(+t.dataset.t))return; picked.push(+t.dataset.t); say(q.bank[+t.dataset.t]); draw(); });
-    $('#check').onclick=()=>answer(picked.map(i=>q.bank[i]).join(' ')===q.target);
+    el.querySelectorAll('#bank .tile').forEach(t=>t.onclick=()=>{ if(LS.answeredAt===LS.i||picked.includes(+t.dataset.t))return; picked.push(+t.dataset.t); say(q.bank[+t.dataset.t]); draw(); });
+    $('#check').onclick=()=>answer(picked.map(i=>tileKey(q.bank[i])).join(' ')===q.target);
   }
-  if(q.type==='speak'){ $('#sp1').onclick=()=>answer(true,true); $('#sp0').onclick=()=>answer(false,true); }
+}
+function bindPlay(text){ if($('#qplay')){ $('#qplay').onclick=()=>say(text); $('#qslow').onclick=()=>say(text,true); } }
+// Show the Hebrew for a from-memory question (as a hint, or after answering).
+function revealQ(q,play){
+  const r=$('#reveal'); if(!r) return;
+  if(!r.dataset.open){ r.dataset.open=1;
+    r.innerHTML=`<div class="glyph mid" lang="he">${esc(show(q.say))}</div>${S.set.tr?`<span class="tr">${esc(trOf(q.item))}</span>`:''}${playRow()}`;
+    bindPlay(q.say); }
+  if(play) say(q.say);
 }
 function answer(ok, selfRated, extra){
+  if(!LS||LS.answeredAt===LS.i) return;   // one answer per question, however many times the mic is tapped
+  LS.answeredAt=LS.i;
   const q=LS.qs[LS.i], id=q.item.id;
-  const st=S.stats[id]=S.stats[id]||{c:0,w:0};
-  if(ok){ st.c++; LS.combo++; LS.best=Math.max(LS.best,LS.combo);
-    const first=!LS.missed.has(q); let gain=first?10:5; if(LS.combo>0&&LS.combo%5===0) gain+=5;
+  // Practice drills can show items you haven't been taught yet; those don't count as learned.
+  const st=S.stats[id]||(LS.opt.drill?null:(S.stats[id]={c:0,w:0}));
+  const graded=extra&&extra.stars!=null;
+  if(ok){ if(st) st.c++; LS.combo++; LS.best=Math.max(LS.best,LS.combo);
+    const first=!LS.missed.has(q); let gain=first?10:5; if(graded) gain=[0,5,10,15][extra.stars]; if(LS.combo>0&&LS.combo%5===0) gain+=5;
     LS.xp+=gain; if(first) LS.correct++;
-  } else { st.w++; LS.combo=0; LS.wrong++;
+  } else { if(st) st.w++; LS.combo=0; LS.wrong++;
     if(!LS.missed.has(q)&&!selfRated){ LS.missed.add(q); if(!LS.test) LS.qs.push(q); }
     if(selfRated) LS.xp+=3;
   }
-  st.last=Date.now();
+  if(st) st.last=Date.now();
+  if(graded&&extra.stars>=2&&q.item.kind==='phrase'){ S.spoken=S.spoken||{}; S.spoken[id]=(S.spoken[id]||0)+1; }
   const fb=$('#fb'); fb.hidden=false;
   fb.className='feedback '+(ok?'good':'bad');
-  const praise=['מְצֻיָּן! Excellent!','יָפֶה! Nice!','כׇּל הַכָּבוֹד! Well done!','סַבָּבָה! Got it!','וָאוּ! Wow!'];
+  const praise=['מְצֻיָּן! Excellent!','יָפֶה! Nice!','כׇּל הַכָּבוֹד! Well done!','סַבָּבָה! Got it!','וואו! Wow!'];
+  const isSpeak=q.type==='say'||q.type==='sayEn';
   const showAns=q.item.kind==='phrase'||q.type==='read'||q.type==='s2g'||q.type==='hear';
   const ansHtml = q.type==='read'?`${heSpan(q.item.w)} &nbsp;${esc(q.answer)}`
     : q.item.kind==='phrase'?`${heSpan(heOf(q.item))}<br>${S.set.tr?`<i>${esc(trOf(q.item))}</i> · `:''}${esc(q.item.en)}`
-    : q.type==='s2g'||q.type==='hear'?`${heSpan(q.item.ch)} ${esc(q.item.nm)}, “${esc(q.item.snd)}”`
     : `${heSpan(q.item.ch)} ${esc(q.item.nm)}, “${esc(q.item.snd)}”`;
-  const graded=extra&&extra.stars!=null;
-  const msg=graded?(extra.stars===3?'מְצֻיָּן! That sounded great.':extra.stars===2?'Close! Pretty good.':'Not quite. Listen once more and try again.')
+  const msg=graded?(extra.stars===3?'מְצֻיָּן! That came through clearly.':extra.stars===2?'Close! Most of it came through.':'Not quite. Listen once more and try again.')
     :ok?(selfRated?'Great. Keep using it.':praise[Math.random()*praise.length|0]):(selfRated?'You\'ll see it again soon.':'Not quite.');
   fb.innerHTML=`<div class="msg">${msg}</div>
-    ${(!ok||showAns)&&q.type!=='say'?`<div class="ans">${ok?'':'Answer: '}${ansHtml}</div>`:''}
+    ${(!ok||showAns)&&(!isSpeak||q.recall)?`<div class="ans">${ok?'':'Answer: '}${ansHtml}</div>`:''}
     ${graded?`<div class="row"><button class="btn ghost" id="again">${ICON.mic} Try again</button><button class="btn" id="cont">Continue</button></div>`:`<button class="btn" id="cont">Continue</button>`}`;
-  if(graded) $('#again').onclick=()=>recordSay(q,true);
-  if(q.type==='say'||q.type==='speak'){ if(q.type==='speak'&&ok) say(heOf(q.item)); }
+  if(graded) $('#again').onclick=()=>{ const m=$('#mic'); if(m) m.click(); };
+  if(isSpeak){ if(q.recall&&!graded) say(q.say); }
+  else if(q.type==='speak'){ if(ok) say(heOf(q.item)); }
   else if(q.item.kind==='phrase') say(heOf(q.item));
   else if(q.type==='read') say(q.item.w);
   else say(q.item.name);
-  $('#cont').onclick=()=>{ LS.i++; if(LS.i<LS.qs.length) renderQ(); else finishLesson(); };
+  $('#cont').onclick=nextQ;
   $('#cont').focus();
   const c=document.querySelector('.combo'); if(c) c.textContent=LS.combo>=3?'×'+LS.combo:'';
 }
@@ -984,15 +1184,17 @@ function checkBadges(){
 }
 function finishLesson(){
   if(LS.test){ finishTest(); return; }
-  const perfect=LS.wrong===0&&LS.qs.length>=8&&LS.opt.drill!=='speak';
-  let xp=LS.xp+10+(perfect?20:0);
+  const answered=LS.correct+LS.wrong;
+  const perfect=!LS.opt.drill&&LS.wrong===0&&LS.skipped===0&&LS.correct>=LS.total&&LS.qs.length>=8;
+  let xp=LS.xp+(answered?10:0)+(perfect?20:0);
+  (LS.intro||[]).forEach(id=>{ S.stats[id]=S.stats[id]||{c:0,w:0}; });
   const lvBefore=levelOf(S.xp), goalBefore=(S.days[dayKey()]||0)>=DAILY_GOAL;
   if(LS.unit) S.lessons[LS.unit.id]=(S.lessons[LS.unit.id]||0)+1;
   if(perfect) S.flags.perfect=true;
   addXP(xp);
   const newBadges=checkBadges(); save();
   const lvAfter=levelOf(S.xp), goalNow=(S.days[dayKey()]||0)>=DAILY_GOAL;
-  const acc=Math.round(LS.correct/LS.total*100);
+  const acc=Math.min(100,Math.round(LS.correct/Math.max(1,LS.total)*100));
   const notes=[];
   if(lvAfter>lvBefore) notes.push(`<b>Level ${lvAfter}!</b> You leveled up.`);
   if(goalNow&&!goalBefore) notes.push('<b>Daily goal reached.</b> Your streak is safe today.');
@@ -1034,7 +1236,8 @@ function rushQ(){
    <p class="muted" style="text-align:center;margin:0">Wrong answers cost 3 seconds.</p></div>`;
   bindQuit();
   document.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{
-    const o=q.opts[+b.dataset.o]; const st=S.stats[it.id]=S.stats[it.id]||{c:0,w:0};
+    if(b.disabled) return;
+    const o=q.opts[+b.dataset.o]; const st=S.stats[it.id]||{c:0,w:0};   // only letters you've learned are tracked
     if(o.ok){ RUSH.score++; st.c++; b.classList.add('right'); }
     else { RUSH.left=Math.max(0,RUSH.left-3); RUSH.miss++; st.w++; b.classList.add('wrong'); document.querySelectorAll('.opt').forEach((x,i)=>{ if(q.opts[i].ok) x.classList.add('right'); }); }
     document.querySelectorAll('.opt').forEach(x=>x.disabled=true);
@@ -1047,11 +1250,11 @@ function endRush(){
   const best=r.score>S.rushBest; if(best) S.rushBest=r.score;
   const xp=r.score*2+5; addXP(xp); const nb=checkBadges(); save();
   $('#sheetIn').innerHTML=`<div class="qbody"><div class="done-hero">
-    <span class="he" lang="he">${best?'שִׂיא!':'זְמַן!'}</span>
+    <span class="he" lang="he">${best?'שִׂיא!':'נִגְמַר הַזְּמַן!'}</span>
     <h2>${best?'New personal best!':'Time\'s up!'}</h2>
     <div class="rewards"><div class="reward xp"><b>+${xp}</b><span>XP</span></div><div class="reward acc"><b>${r.score}</b><span>Score</span></div><div class="reward fire"><b>${S.rushBest}</b><span>Best</span></div></div>
     ${nb.map(b=>`<div class="tip" style="width:100%"><b>New badge: ${b.t}.</b> ${b.d}.</div>`).join('')}
-    <p class="muted" style="margin:0">${best?'<span class="he" lang="he" style="font-size:20px">שִׂיא</span> (si) means record.':'<span class="he" lang="he" style="font-size:20px">זְמַן</span> (zman) means time.'}</p>
+    <p class="muted" style="margin:0">${best?'<span class="he" lang="he" style="font-size:20px">שִׂיא</span> (si) means record.':'<span class="he" lang="he" style="font-size:20px">נִגְמַר הַזְּמַן</span> (nigmar hazman) means "time\'s up".'}</p>
   </div></div><div class="feedback"><div class="row"><button class="btn ghost" id="doneBtn">Done</button><button class="btn" id="again">Play again</button></div></div>`;
   if(best) confetti();
   $('#doneBtn').onclick=()=>{ LS=null; $('#sheet').hidden=true; render(); };
@@ -1060,7 +1263,7 @@ function endRush(){
 
 /* ---------- tests ---------- */
 function finishTest(){
-  const score=Math.round(LS.correct/LS.total*100), pass=score>=80;
+  const score=Math.min(100,Math.round(LS.correct/Math.max(1,LS.total)*100)), pass=score>=80;
   const xp=LS.xp+(pass?30:10), kind=LS.unit?LS.unit.id:'exam';
   S.tests=S.tests||[]; S.tests.push({d:dayKey(),score,kind}); if(S.tests.length>50) S.tests.shift();
   if(LS.unit){ S.lessons[kind]=(S.lessons[kind]||0)+1; S.testBest=S.testBest||{}; S.testBest[kind]=Math.max(S.testBest[kind]||0,score); }
@@ -1072,7 +1275,7 @@ function finishTest(){
   $('#sheetIn').innerHTML=`<div class="qbody"><div class="done-hero">
       <span class="he" lang="he">${pass?(S.set.me==='f'?'עָבַרְתְּ!':'עָבַרְתָּ!'):'כִּמְעַט!'}</span>
       <h2>${pass?'You passed!':'Almost there'}</h2>
-      <p class="muted" style="margin:0">${esc(LS.title)} · ${pass?'עָבַרְתָּ means "you passed".':'כִּמְעַט means "almost". You need 80% to pass.'}</p>
+      <p class="muted" style="margin:0">${esc(LS.title)} · ${pass?(S.set.me==='f'?'עָבַרְתְּ (avart)':'עָבַרְתָּ (avarta)')+' means "you passed".':'כִּמְעַט means "almost". You need 80% to pass.'}</p>
       <div class="rewards">
         <div class="reward acc"><b>${score}%</b><span>Score</span></div>
         <div class="reward xp"><b>+${xp}</b><span>XP</span></div>
@@ -1084,118 +1287,324 @@ function finishTest(){
     <div class="feedback"><div class="row">${pass?'':`<button class="btn ghost" id="retake">Retake</button>`}<button class="btn" id="doneBtn">Continue</button></div></div>`;
   if(pass) confetti();
   $('#doneBtn').onclick=()=>{ LS=null; $('#sheet').hidden=true; render(); };
+  if(!pass&&unit) toast('Pass with 80% to unlock what comes next.');
   if(!pass) $('#retake').onclick=()=>startLesson(unit?{unit}:{exam:true});
 }
 
-/* ---------- repeat after me (speech recognition) ---------- */
-let micBroken=false, recActive=null;
+/* ---------- speaking: speech recognition, record-and-compare, self-rating ---------- */
+/* iPhone home-screen apps can't use speech recognition at all (WebKit bug 225298), so there we go straight to
+   record-and-compare. In Safari it works when Siri is on. Everything is keyed to QTOK, the question on screen,
+   so a late result or a stray timer can never touch the next question. */
 const SRec=()=>window.SpeechRecognition||window.webkitSpeechRecognition;
-function selfRateFallback(){
-  const w=$('.micwrap'); if(!w) return;
-  w.innerHTML=`<div class="tip">Recording isn't available here, so be your own judge: say it out loud, play the audio, and compare.</div>`;
-  $('#fb').innerHTML=`<div class="row"><button class="btn ghost" id="sp0">Still tricky</button><button class="btn sea" id="sp1">I nailed it</button></div>`;
-  $('#sp1').onclick=()=>answer(true,true); $('#sp0').onclick=()=>answer(false,true);
+const isIOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const iosStandalone=isIOS&&(navigator.standalone===true||matchMedia('(display-mode: standalone)').matches);
+const asrSession={off:false,misses:0};
+let QTOK=null, autoSayT=null, REC=null;
+function speakMode(){
+  if(SRec()&&!iosStandalone&&S.set.asr!=='off'&&!asrSession.off) return 'asr';
+  if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia&&window.MediaRecorder) return 'rec';
+  return 'self';
 }
-function normHe(t){
-  return strip(t).replace(/[^א-ת]/g,'')
-    .replace(/[ךםןףץ]/g,c=>({'ך':'כ','ם':'מ','ן':'נ','ף':'פ','ץ':'צ'}[c]))
-    .replace(/[חק]/g,'כ').replace(/ט/g,'ת').replace(/ע/g,'א').replace(/ב/g,'ו');
+function stopListening(){ if(REC){ const r=REC; REC=null; r.abort(); } }
+
+/* Text comparison. Recognizers write plain spelling (סוכר, איתך, עייפה) while the app has vowel marks (סֻכָּר, אִתָּךְ),
+   so both sides are folded the same way: same-sounding letters merged, vowel letters and doubles dropped. */
+const LATIN={ross:'רוס'};
+const FINALS={'ך':'כ','ם':'מ','ן':'נ','ף':'פ','ץ':'צ'};
+function normWord(w){
+  return strip(String(w).toLowerCase().replace(/[a-z]+/g,m=>LATIN[m]||'')).replace(/[^א-ת]/g,'')
+    .replace(/[ךםןףץ]/g,c=>FINALS[c]).replace(/[חק]/g,'כ').replace(/ט/g,'ת').replace(/ע/g,'א')
+    .replace(/(.)\1+/g,'$1').replace(/(?!^)[וי]/g,'').replace(/ב/g,'ו').replace(/ה$/,'א');
 }
+const normHe=t=>String(t).split(/\s+/).map(normWord).join('');
 function lev(a,b){
   const m=a.length,n=b.length; if(!m) return n; if(!n) return m;
   let prev=[...Array(n+1).keys()];
   for(let i=1;i<=m;i++){ const cur=[i]; for(let j=1;j<=n;j++) cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1)); prev=cur; }
   return prev[n];
 }
+const sim=(a,b)=>1-lev(a,b)/Math.max(a.length,b.length,1);
 function grade(alts,targets){
-  let best=0,text=alts[0]||'';
+  let best=0,text=alts[0]||'',target=targets[0];
   for(const a of alts){ const na=normHe(a); if(!na) continue;
     for(const t of targets){ const nt=normHe(t); if(!nt) continue;
-      const sc=1-lev(na,nt)/Math.max(na.length,nt.length); if(sc>best){best=sc;text=a;} } }
-  return {score:best,text};
+      const sc=sim(na,nt); if(sc>best){best=sc;text=a;target=t;} } }
+  return {score:best,text,target};
 }
-let asrMisses=0, useRecorder=false;
-function recordSay(q,retry){
-  const SR=SRec();
-  if(!SR||micBroken||useRecorder){ if(!retry) recorderUI(q); return; }
-  if(recActive){ recActive.stop(); return; }   // second tap = "I'm done"
-  window.speechSynthesis?.cancel?.();
-  let r; try{ r=new SR(); }catch(e){ micBroken=true; recorderUI(q); return; }
+const starsOf=score=>score>=.8?3:score>=.6?2:score>=.35?1:0;
+// Which words of the target came through, so you know exactly what to work on.
+function wordMatch(alts,target){
+  const heard=alts.flatMap(a=>String(a).split(/\s+/)).map(normWord).filter(Boolean);
+  return target.split(/\s+/).map(w=>tileWord(w)).filter(Boolean).map(w=>{ const n=normWord(w);
+    return {w, ok:!n||heard.some(h=>sim(h,n)>=.67)}; });
+}
+const SOUND_TIPS=[
+  [/[חך]|כ(?!ּ)/,'ח, and כ without a dot, are a throaty "ch", like in Bach.'],
+  [/ר/,'Hebrew ר comes from the back of the throat, close to a French r. Don\'t use the English r.'],
+  [/צ/,'צ is "ts", like the end of "cats".'],
+];
+function tipsFor(chips){
+  const miss=chips.filter(c=>!c.ok).map(c=>c.w).join(' '); if(!miss) return [];
+  const t=SOUND_TIPS.filter(([re])=>re.test(miss)).map(x=>x[1]).slice(0,2);
+  if(t.length<2) t.push('Most Hebrew words are stressed on the last syllable. Say it a little slower and clearer.');
+  return t;
+}
+function starsHtml(n){ return `<div class="stars">${[0,1,2].map(i=>`<span class="${i<n?'on':''}">${ICON.star}</span>`).join('')}</div>`; }
+
+/* One recognition attempt. Second tap = "I'm done". Results that arrive after stop() are still used (iPhone sends them late). */
+function listenOnce(tok,h){
+  const SR=SRec(); let r;
+  try{ r=new SR(); }catch(e){ h.onFail('start-failed'); return; }
   r.lang='he-IL'; r.interimResults=true; r.maxAlternatives=5; r.continuous=false;
   let alts=[], done=false, stopping=false, lastErr='', silenceT=null, graceT=null, hardT=null;
-  const heard=()=>$('#heard');
-  const stillHere=()=>LS&&LS.qs[LS.i]===q;
-  const finish=()=>{
-    if(done) return; done=true;
-    [silenceT,graceT,hardT].forEach(clearTimeout);
-    recActive=null;
-    if(!stillHere()) { try{r.abort();}catch(e){} return; }
-    const m=$('#mic'); if(m) m.classList.remove('on');
-    const h=heard();
-    if(!alts.length){
-      asrMisses++;
-      if(asrMisses>=2&&!retry){ useRecorder=true; toast('Scoring isn\'t hearing you on this phone, so record yourself and compare instead.'); recorderUI(q); return; }
-      if(h) h.innerHTML=`I didn't catch that. Tap the mic and try again.${lastErr?`<br><small class="muted">(${esc(lastErr)})</small>`:''}`;
-      return;
-    }
-    asrMisses=0;
-    const {score,text}=grade(alts,q.targets);
-    const stars=score>=.8?3:score>=.5?2:score>=.25?1:0;
-    if(h) h.innerHTML=`<div class="stars">${[0,1,2].map(i=>`<span class="${i<stars?'on':''}">${ICON.star}</span>`).join('')}</div><div>I heard: ${text?heSpan(text):'<i>nothing clear</i>'}</div>`;
-    if(!retry){ const sk=$('#skipSay'); if(sk) sk.remove(); answer(stars>=2,true,{stars}); }
-  };
-  // Ask the recognizer to wrap up, then give it time to hand over its result (iPhone sends it only after stopping).
-  const stop=()=>{ if(stopping||done) return; stopping=true; try{ r.stop(); }catch(e){} graceT=setTimeout(finish,2000); const h=heard(); if(h&&!alts.length) h.textContent='Checking…'; };
+  const clear=()=>[silenceT,graceT,hardT].forEach(clearTimeout);
+  const me={tok};
+  const finish=()=>{ if(done) return; done=true; clear(); if(REC===me) REC=null; h.onEnd(); if(QTOK!==tok) return; alts.length?h.onDone(alts):h.onFail(lastErr); };
+  me.stop=()=>{ if(stopping||done) return; stopping=true; try{ r.stop(); }catch(e){} clearTimeout(graceT); graceT=setTimeout(finish,5000); if(!alts.length) h.onChecking(); };
+  me.abort=()=>{ if(done) return; done=true; clear(); try{ r.abort(); }catch(e){} if(REC===me) REC=null; h.onEnd(); };
   r.onresult=e=>{
+    if(done) return;
     let joined='', isFinal=false; const extra=[];
-    for(let i=0;i<e.results.length;i++){ const res=e.results[i]; joined+=res[0].transcript; if(res.isFinal) isFinal=true; for(let k=0;k<res.length;k++) extra.push(res[k].transcript); }
+    for(let i=0;i<e.results.length;i++){ const res=e.results[i]; joined+=res[0].transcript; if(res.isFinal) isFinal=true; for(let k=1;k<res.length;k++) extra.push(res[k].transcript); }
     alts=[joined,...extra].filter(t=>t&&t.trim());
-    const h=heard(); if(h&&stillHere()&&joined.trim()) h.innerHTML=`<div>${heSpan(joined)}</div><small>Tap the mic when you're done.</small>`;
+    if(joined.trim()&&QTOK===tok) h.onInterim(joined);
     clearTimeout(silenceT);
-    if(isFinal||stopping) silenceT=setTimeout(finish,300); else silenceT=setTimeout(stop,1300);
+    if(isFinal) silenceT=setTimeout(finish,250); else if(!stopping) silenceT=setTimeout(me.stop,1500);
   };
-  r.onerror=e=>{
-    lastErr=e.error||'';
-    if(['not-allowed','service-not-allowed','audio-capture'].includes(e.error)){ done=true; [silenceT,graceT,hardT].forEach(clearTimeout); recActive=null; micBroken=true; if(stillHere()&&!retry) recorderUI(q); return; }
-  };
-  r.onend=()=>{ if(done) return; clearTimeout(graceT); graceT=setTimeout(finish,alts.length?50:400); };
-  hardT=setTimeout(stop,7000);
-  try{ r.start(); recActive={stop}; $('#mic').classList.add('on'); heard().textContent='Listening… say it, then tap the mic again.'; }
-  catch(e){ [hardT].forEach(clearTimeout); micBroken=true; recorderUI(q); }
+  r.onerror=e=>{ lastErr=e.error||'error'; if(['not-allowed','service-not-allowed','audio-capture'].includes(e.error)){ alts=[]; finish(); } };
+  r.onend=()=>{ if(done) return; clearTimeout(graceT); graceT=setTimeout(finish,alts.length?50:600); };
+  try{ r.start(); }catch(e){ h.onFail('start-failed'); return; }
+  REC=me; hardT=setTimeout(me.stop,8000); h.onStart();
 }
 
-/* Backup when speech scoring is unavailable: record yourself, play it back next to the native audio, rate yourself. */
+/* Wire up the mic area (#micwrap/#mic/#heard) and the rating area (#fb) for one speaking prompt.
+   h: {targets, onGraded(res,first), onSelf(ok), native(), afterRecord(), fallback()} */
+function setupSpeak(q,h){
+  const mode=speakMode();
+  if(mode!=='asr'){ (h.fallback||(()=>mode==='rec'?recorderUI(q,h):selfRateUI(q,h)))(); return; }
+  let graded=false;
+  const tok=QTOK;
+  $('#mic').onclick=()=>{
+    if(REC&&REC.tok===tok){ REC.stop(); return; }
+    stopListening(); clearTimeout(autoSayT); try{ window.speechSynthesis?.cancel?.(); }catch(e){}
+    const hEl=$('#heard'), mic=$('#mic');
+    const put=html=>{ if(hEl&&hEl.isConnected) hEl.innerHTML=html; };
+    listenOnce(tok,{
+      onStart:()=>{ mic.classList.add('on'); put('Listening… say it, then tap the mic when you\'re done.'); },
+      onInterim:t=>put(`<div>${heSpan(t)}</div><small>Tap the mic when you're done.</small>`),
+      onChecking:()=>put('Checking…'),
+      onEnd:()=>mic.classList.remove('on'),
+      onDone:alts=>{
+        asrSession.misses=0;
+        const res=grade(alts,h.targets); res.stars=starsOf(res.score);
+        const chips=wordMatch(alts,res.target);
+        put(`${starsHtml(res.stars)}<div class="chips" lang="he">${chips.map(c=>`<span class="wchip ${c.ok?'ok':'miss'}">${esc(show(c.w))}</span>`).join('')}</div>
+          <div class="muted" style="font-size:13px">Green words came through. I heard: ${heSpan(res.text)}</div>
+          ${res.stars<3?tipsFor(chips).map(t=>`<div class="tip">${t}</div>`).join(''):''}`);
+        const first=!graded; graded=true; h.onGraded(res,first);
+      },
+      onFail:err=>{
+        asrSession.misses++;
+        const fatal=['not-allowed','service-not-allowed','audio-capture','start-failed'].includes(err);
+        if(fatal||asrSession.misses>=3){
+          asrSession.off=true;
+          toast(err==='service-not-allowed'?'Speech scoring is off on this phone (on iPhone, Siri must be on). Switching to record and compare.'
+            :err==='not-allowed'?'The microphone is blocked for this page. Switching to record and compare.'
+            :'Scoring isn\'t hearing you here, so let\'s record and compare instead.');
+          if(!graded) (h.fallback||(()=>recorderUI(q,h)))(); else put('Scoring stopped working. Tap Continue.');
+          return;
+        }
+        put(`I didn't catch that. Tap the mic and try again.${err&&err!=='error'?`<br><small class="muted">(${esc(err)})</small>`:''}`);
+      }
+    });
+  };
+}
+function rateRow(h){
+  const fb=$('#fb'); if(!fb) return;
+  fb.hidden=false; fb.className='feedback';
+  fb.innerHTML=`<div class="row"><button class="btn ghost" id="sp0">Still tricky</button><button class="btn sea" id="sp1">I nailed it</button></div>`;
+  $('#sp1').onclick=()=>{ stopAllAudio(); stopRecStream(); h.onSelf(true); };
+  $('#sp0').onclick=()=>{ stopAllAudio(); stopRecStream(); h.onSelf(false); };
+}
+function selfRateUI(q,h){
+  const w=$('#micwrap'); if(!w) return;
+  w.innerHTML=`<div class="tip">Recording isn't available here, so be your own judge: say it out loud, ${q.recall?'then tap Show a hint to check.':'play the audio, and compare.'}</div>`;
+  rateRow(h);
+}
+/* Record yourself, then hear yourself next to the native audio and rate yourself. Works in the iPhone home-screen app. */
 let recStream=null, recMedia=null, recURL=null;
 function stopRecStream(){ try{ recStream&&recStream.getTracks().forEach(t=>t.stop()); }catch(e){} recStream=null; }
-function recorderUI(q){
-  const w=$('.micwrap'); if(!w) return;
-  if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia&&window.MediaRecorder)){ selfRateFallback(); return; }
+function stopRecording(){ try{ if(recMedia&&recMedia.state==='recording') recMedia.stop(); }catch(e){} }
+function recorderUI(q,h){
+  const w=$('#micwrap'); if(!w) return;
+  if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia&&window.MediaRecorder)){ selfRateUI(q,h); return; }
+  const tok=QTOK;
   w.innerHTML=`<button class="mic" id="recBtn" aria-label="Record yourself">${ICON.mic}</button>
     <div class="heard muted" id="heard">Tap to record yourself, then tap again to stop.</div>
-    <div class="row" id="cmp" hidden style="width:100%"><button class="btn ghost" id="playMine">${ICON.play} Me</button><button class="btn sea" id="playNative">${ICON.play} Native</button></div>`;
-  $('#fb').innerHTML=`<div class="row"><button class="btn ghost" id="sp0">Still tricky</button><button class="btn sea" id="sp1">I nailed it</button></div>`;
-  $('#sp1').onclick=()=>{ stopRecStream(); answer(true,true); }; $('#sp0').onclick=()=>{ stopRecStream(); answer(false,true); };
-  $('#playNative').onclick=()=>say(q.say);
-  $('#playMine').onclick=()=>{ if(recURL){ const a=new Audio(recURL); a.play().catch(()=>{}); } };
+    <div class="row" id="cmp" hidden style="width:100%"><button class="btn ghost" id="playMine">${ICON.play} Me</button><button class="btn sea" id="playNative">${ICON.play} Native</button></div>
+    ${iosStandalone?'<small class="muted">Scoring isn\'t available in the home-screen app on iPhone. For scored practice, open Daber in Safari.</small>':''}`;
+  rateRow(h);
+  $('#playNative').onclick=()=>h.native();
+  $('#playMine').onclick=()=>{ if(recURL){ try{ window.speechSynthesis?.cancel?.(); }catch(e){} const a=new Audio(recURL); a.play().catch(()=>{}); } };
+  let busy=false;
   $('#recBtn').onclick=async()=>{
-    const btn=$('#recBtn'), h=$('#heard');
+    const btn=$('#recBtn'), hd=$('#heard');
     if(recMedia&&recMedia.state==='recording'){ recMedia.stop(); return; }
-    window.speechSynthesis?.cancel?.();
-    try{ recStream=await navigator.mediaDevices.getUserMedia({audio:true}); }
-    catch(e){ selfRateFallback(); return; }
-    const chunks=[]; recMedia=new MediaRecorder(recStream);
-    recMedia.ondataavailable=e=>{ if(e.data&&e.data.size) chunks.push(e.data); };
-    recMedia.onstop=()=>{
-      stopRecStream(); btn.classList.remove('on');
+    if(busy) return; busy=true;
+    stopListening(); clearTimeout(autoSayT); try{ window.speechSynthesis?.cancel?.(); }catch(e){}
+    let stream;
+    try{ stream=await navigator.mediaDevices.getUserMedia({audio:true}); }
+    catch(e){ busy=false; if(QTOK===tok) selfRateUI(q,h); return; }
+    busy=false;
+    if(QTOK!==tok){ stream.getTracks().forEach(t=>t.stop()); return; }
+    stopRecStream(); recStream=stream;
+    const chunks=[], mr=new MediaRecorder(stream); recMedia=mr;
+    mr.ondataavailable=e=>{ if(e.data&&e.data.size) chunks.push(e.data); };
+    mr.onstop=()=>{
+      clearTimeout(mr._t); if(recStream===stream) stopRecStream(); else stream.getTracks().forEach(t=>t.stop());
+      btn.classList.remove('on');
+      if(QTOK!==tok) return;
       if(recURL) URL.revokeObjectURL(recURL);
-      recURL=URL.createObjectURL(new Blob(chunks,{type:recMedia.mimeType||'audio/mp4'}));
-      h.textContent='Compare your version with the native one, then rate yourself.';
+      recURL=URL.createObjectURL(new Blob(chunks,{type:mr.mimeType||'audio/mp4'}));
+      if(h.afterRecord) h.afterRecord();
+      hd.textContent='Compare your version with the native one, then rate yourself.';
       $('#cmp').hidden=false;
-      const a=new Audio(recURL); a.onended=()=>setTimeout(()=>say(q.say),300); a.play().catch(()=>say(q.say));
+      const a=new Audio(recURL); a.onended=()=>setTimeout(()=>{ if(QTOK===tok) h.native(); },300); a.play().catch(()=>h.native());
     };
-    recMedia.start(); btn.classList.add('on'); h.textContent='Recording… tap again to stop.';
-    setTimeout(()=>{ if(recMedia&&recMedia.state==='recording') recMedia.stop(); },6000);
+    mr.start(); btn.classList.add('on'); hd.textContent='Recording… tap again to stop.';
+    mr._t=setTimeout(()=>{ if(mr.state==='recording') mr.stop(); },8000);
   };
+}
+
+/* ---------- conversations ---------- */
+let CV=null;
+const HER={partner:true};   // her lines use the partner forms: her gender speaking, yours listening
+function herLine(ref){
+  if(typeof ref==='string'){ const it=ITEMS['P:'+ref]; return {he:pickV(it.heV,HER),tr:pickV(it.trV,HER),en:it.en}; }
+  const [he,tr,en]=ref; return {he:pickV(he,HER),tr:pickV(tr,HER),en};
+}
+const sayHer=t=>say(t,false,1.15);
+const partnerWord=(she,he)=>S.set.them==='m'?he:she;
+function openConvos(){
+  stopAllAudio(); FC=null; LS=null; CV=null; $('#sheet').hidden=false;
+  $('#sheetIn').innerHTML=`<div class="lbar"><button class="x" id="fcClose" aria-label="Close">${ICON.x}</button><div class="qtitle" style="flex:1">Conversations</div></div>
+    <div class="qbody"><p class="muted" style="margin:0">${partnerWord('She','He')} says a line, then it's your turn to answer out loud. You'll see what to say in English, with a hint if you need it.</p>
+    <div class="stack">${Object.entries(DIALOGS).map(([id,d])=>`<button class="card practice-item" data-dl="${id}"><span class="ic he sm" lang="he">שִׂיחָה</span><div><b>${esc(d.title)}${(S.convos||{})[id]?' ✓':''}</b><span>${esc(d.ctx)} ${d.turns.length} lines.</span></div></button>`).join('')}</div></div>`;
+  $('#fcClose').onclick=closeSheet;
+  document.querySelectorAll('[data-dl]').forEach(b=>b.onclick=()=>startConvo(b.dataset.dl,null));
+}
+function startConvo(id,unit){
+  stopAllAudio();
+  CV={id,d:DIALOGS[id],unit,i:0,log:[],xp:0,stars:[],doneTurn:-1};
+  LS={title:CV.d.title,qs:[],i:0,combo:0,opt:{convo:true},answeredAt:-1};
+  $('#sheet').hidden=false;
+  $('#sheetIn').innerHTML=lessonBar(0)+`<div class="qbody"><div class="eyebrow">Conversation</div><h2>${esc(CV.d.title)}</h2>
+    <p class="muted" style="margin:0">${esc(CV.d.ctx)}</p>
+    <div class="tip">${partnerWord('She','He')} speaks first. Tap “What does ${partnerWord('she','he')} mean?” if you need the English. On your turn, answer out loud in Hebrew.${speakMode()==='asr'?'':' Then pick the answer you said, to check yourself.'}</div></div>
+    <div class="feedback"><button class="btn" id="cont">Start</button></div>`;
+  bindQuit();
+  $('#cont').onclick=renderTurn;
+}
+function convoLog(){ return CV.log.map(l=>`<div class="bub ${l.me?'me':'her'}">${heSpan(l.he)}${l.me?`<span class="bstars">${'★'.repeat(l.stars)}${'☆'.repeat(3-l.stars)}</span>`:''}</div>`).join(''); }
+function scrollChat(){ const c=$('#chat'); if(c) c.scrollTop=c.scrollHeight; }
+function renderTurn(){
+  stopAllAudio();
+  const t=CV.d.turns[CV.i]; if(!t){ finishConvo(); return; }
+  QTOK={convo:CV.i};
+  const el=$('#sheetIn'), prog=CV.i/CV.d.turns.length;
+  if(t.her){
+    const L=herLine(t.her), last=!CV.d.turns[CV.i+1];
+    el.innerHTML=lessonBar(prog)+`<div class="qbody chat" id="chat">${convoLog()}
+      <div class="bub her now">${heSpan(L.he)}${S.set.tr?`<span class="tr">${esc(L.tr)}</span>`:''}<button class="linkbtn" id="enB">What does ${partnerWord('she','he')} mean?</button></div>${playRow()}</div>
+      <div class="feedback" id="fb"><button class="btn" id="cont">${last?'Finish':'Your turn'}</button></div>`;
+    bindQuit();
+    $('#qplay').onclick=()=>sayHer(L.he); $('#qslow').onclick=()=>say(L.he,true,1.15);
+    $('#enB').onclick=e=>{ e.currentTarget.outerHTML=`<span class="en">${esc(L.en)}</span>`; };
+    autoSayT=setTimeout(()=>sayHer(L.he),300);
+    $('#cont').onclick=()=>{ CV.log.push({he:L.he}); CV.i++; renderTurn(); };
+    scrollChat(); return;
+  }
+  const ids=t.me.map(k=>'P:'+k), items=ids.map(k=>ITEMS[k]), targets=items.map(heOf);
+  const q={item:items[0],say:targets[0],targets,recall:true,hinted:false};
+  el.innerHTML=lessonBar(prog)+`<div class="qbody chat" id="chat">${convoLog()}
+    <div class="bub me ask"><span class="eyebrow">Your turn</span><b>Say: “${esc(items[0].en)}”</b>${items.length>1?`<span class="muted" style="font-size:13px">or: ${items.slice(1).map(it=>'“'+esc(it.en)+'”').join(', ')}</span>`:''}
+      <div id="reveal" class="prompt" style="margin-top:6px"><button class="btn ghost" id="hintB" style="width:auto;padding:8px 14px">Show a hint</button></div></div>
+    <div class="micwrap" id="micwrap"><button class="mic" id="mic" aria-label="Answer out loud">${ICON.mic}</button><div class="heard muted" id="heard">Tap the mic and answer.</div></div></div>
+    <div class="feedback" id="fb"><button class="btn ghost" id="showMe">Show me the answer</button></div>`;
+  bindQuit();
+  $('#hintB').onclick=()=>{ q.hinted=true; revealQ(q,true); scrollChat(); };
+  const showMe=()=>{ revealQ(q,false); meDone(items[0],0,false); };
+  $('#showMe').onclick=showMe;
+  setupSpeak(q,{targets,
+    onGraded:res=>{
+      const stars=q.hinted?Math.min(2,res.stars):res.stars, it=items[Math.max(0,targets.indexOf(res.target))];
+      if(stars>=2){ meDone(it,stars,true); return; }
+      const fb=$('#fb'); fb.className='feedback bad';
+      fb.innerHTML=`<div class="msg">Not quite. Try again, or see the answer.</div><div class="row"><button class="btn ghost" id="showMe">Show me</button><button class="btn" id="again">${ICON.mic} Try again</button></div>`;
+      $('#showMe').onclick=showMe; $('#again').onclick=()=>$('#mic')&&$('#mic').click();
+    },
+    onSelf:ok=>meDone(items[0],ok?2:0,false),
+    native:()=>say(targets[0]),
+    fallback:()=>pickUI(q,items),
+  });
+  scrollChat();
+}
+// No speech scoring: say it out loud, then pick the line you said.
+function pickUI(q,items){
+  const w=$('#micwrap'); if(!w) return;
+  const mine=new Set(items.map(it=>it.id)), ens=new Set(items.map(it=>it.en));
+  const others=[...new Set(Object.values(DIALOGS).flatMap(d=>d.turns.filter(t=>t.me).map(t=>'P:'+t.me[0])))].filter(k=>!mine.has(k)&&!ens.has(ITEMS[k].en));
+  const opts=shuffle([{it:items[0],ok:true},...pickN(others,2).map(k=>({it:ITEMS[k],ok:false}))]);
+  w.innerHTML=`<div class="muted" style="text-align:center">Say your answer out loud first. Then tap the one you said.</div>
+    <div class="opts list" style="width:100%">${opts.map((o,i)=>`<button class="opt" data-pk="${i}">${heSpan(heOf(o.it))}</button>`).join('')}</div>`;
+  w.querySelectorAll('[data-pk]').forEach(b=>b.onclick=()=>{
+    const o=opts[+b.dataset.pk];
+    w.querySelectorAll('.opt').forEach((x,i)=>{ x.disabled=true; if(opts[i].ok) x.classList.add('right'); });
+    if(!o.ok) b.classList.add('wrong');
+    revealQ(q,false);
+    meDone(items[0],o.ok?(q.hinted?1:2):0,false);
+  });
+  scrollChat();
+}
+function meDone(item,stars,asr){
+  if(!CV||CV.doneTurn===CV.i) return; CV.doneTurn=CV.i;
+  stopListening();
+  const id=item.id, he=heOf(item), st=S.stats[id]=S.stats[id]||{c:0,w:0};
+  stars>=1?st.c++:st.w++; st.last=Date.now();
+  if(asr&&stars>=2){ S.spoken=S.spoken||{}; S.spoken[id]=(S.spoken[id]||0)+1; }
+  CV.xp+=[0,5,10,15][stars]; CV.stars.push(stars);
+  const fb=$('#fb'); fb.hidden=false; fb.className='feedback '+(stars>=2?'good':'bad');
+  fb.innerHTML=`<div class="msg">${stars===3?'מְצֻיָּן! Perfect reply.':stars===2?'יָפֶה! Good reply.':stars===1?'Almost.':'Here\'s how to say it.'}</div>
+    <div class="ans">${heSpan(he)}<br>${S.set.tr?`<i>${esc(trOf(item))}</i> · `:''}${esc(item.en)}</div>
+    <button class="btn" id="cont">Continue</button>`;
+  say(he);
+  $('#cont').onclick=()=>{ CV.log.push({me:true,he,stars}); CV.i++; renderTurn(); };
+  $('#cont').focus();
+  scrollChat();
+}
+function finishConvo(){
+  const c=CV; stopAllAudio(); QTOK=null;
+  if(c.unit) S.lessons[c.unit.id]=(S.lessons[c.unit.id]||0)+1;
+  S.convos=S.convos||{}; S.convos[c.id]=(S.convos[c.id]||0)+1; S.flags.convo=true;
+  const xp=c.xp+15; addXP(xp); const nb=checkBadges(); save();
+  const good=c.stars.filter(s=>s>=2).length;
+  $('#sheetIn').innerHTML=`<div class="qbody"><div class="done-hero">
+      <span class="he" lang="he">כׇּל הַכָּבוֹד!</span>
+      <h2>Conversation done</h2>
+      <p class="muted" style="margin:0">${esc(c.d.title)}</p>
+      <div class="rewards">
+        <div class="reward xp"><b>+${xp}</b><span>XP</span></div>
+        <div class="reward acc"><b>${good}/${c.stars.length}</b><span>Good replies</span></div>
+        <div class="reward fire"><b>${S.streak}</b><span>Day streak</span></div>
+      </div>
+      ${nb.map(b=>`<div class="tip" style="width:100%"><b>New badge: ${b.t}.</b> ${b.d}.</div>`).join('')}
+      <div class="chat" style="width:100%;display:flex;flex-direction:column;gap:8px">${convoLog()}</div>
+      <div class="tip" style="width:100%"><b>Now for real:</b> try this exchange with ${partnerWord('her','him')} tonight.</div>
+    </div></div>
+    <div class="feedback"><div class="row"><button class="btn ghost" id="again">Again</button><button class="btn" id="doneBtn">Continue</button></div></div>`;
+  confetti();
+  $('#again').onclick=()=>startConvo(c.id,c.unit);
+  $('#doneBtn').onclick=()=>{ LS=null; CV=null; $('#sheet').hidden=true; render(); };
 }
 
 /* ---------- flashcards ---------- */
@@ -1212,7 +1621,7 @@ function decks(){
   if(st.length) d.unshift({id:'starred',title:'Starred phrases',ids:st});
   return d;
 }
-function closeSheet(){ window.speechSynthesis?.cancel?.(); LS=null; FC=null; $('#sheet').hidden=true; render(); }
+function closeSheet(){ stopAllAudio(); QTOK=null; LS=null; FC=null; CV=null; $('#sheet').hidden=true; render(); }
 function openDecks(){
   FC=null; LS=null; $('#sheet').hidden=false;
   const list=decks();
